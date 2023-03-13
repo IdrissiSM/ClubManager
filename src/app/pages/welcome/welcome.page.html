@@ -1,0 +1,39 @@
+<ion-content>
+  <ion-refresher slot="fixed">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <div id="header">
+      <div id="logo">
+          <img src="assets/logo.png" alt="logo" />
+      </div>
+      <h2>Club Manager</h2>
+  </div>
+
+  <ion-card class="ion-padding">
+      <ion-card-content>
+          <h1>Welcome back !</h1>
+          <p>For every minute spent in organizing, an hour is earned.</p>
+
+          <ion-button expand="block ion-margin-bottom" routerLink="/login" >Sign In</ion-button>
+          <ion-button expand="block" fill="outline" routerLink="/register">Sign Up</ion-button>
+
+          <div class="line-text">
+              <span class="lines"></span>
+              <span class="text">Connect using</span>
+          </div>
+
+          <div class="socials">
+              <ion-button class="btn-fb">
+                  <ion-icon name="logo-facebook"></ion-icon>
+              </ion-button>
+              <ion-button class="btn-go">
+                  <ion-icon name="logo-google"></ion-icon>
+              </ion-button>
+              <ion-button class="btn-tw">
+                  <ion-icon name="logo-twitter"></ion-icon>
+              </ion-button>
+          </div>
+      </ion-card-content>
+  </ion-card>
+</ion-content>
+

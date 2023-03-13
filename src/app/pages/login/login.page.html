@@ -1,0 +1,84 @@
+<ion-content>
+  <div id= "header">
+    <div id="app-bar">
+      <ion-icon name="arrow-back" routerLink="/welcome"></ion-icon>
+      <div id="logo">
+        <img src="assets/logo.png" alt="logo" />
+      </div>
+    <div>
+  </div>
+
+  </div>
+
+  <h1>Sign In</h1>
+  <p>Sign in to create and manage your club</p>
+  </div>
+
+  <div class="wrapper">
+    <form [formGroup]="loginForm">
+      <ion-card class="form-wrapper">
+        <ion-card-content>
+          <!-- email -->
+          <ion-item>
+            <ion-icon name="mail"></ion-icon>
+            <ion-input
+              placeholder="Email"
+              type="email"
+              formControlName="email"
+              [class.is-invalid]="invalidTouchedDirtyFormControl('email')"
+              >
+            </ion-input>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('email')
+              && email.errors?.['required']">
+              Email field is required
+            </ion-note>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('email')
+              && email.errors?.['email']">
+              Enter a valid email
+            </ion-note>
+          </ion-item>
+          <!-- password -->
+          <ion-item>
+            <ion-icon name="lock-closed"></ion-icon>
+            <ion-input
+              placeholder="Password"
+              type="password"
+              formControlName="password"
+              [class.is-invalid]="invalidTouchedDirtyFormControl('password')"
+              >
+            </ion-input>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('password')
+              && password.errors?.['required']">
+              Password field is required
+            </ion-note>
+          </ion-item>
+          <ion-button [disabled]="loginForm.invalid" (click)="login()" expand="block">Sign in</ion-button>
+        </ion-card-content>
+      </ion-card>
+    </form>
+
+    <div class="line-text">
+      <span class="lines"></span>
+      <span class="text">Connect using</span>
+    </div>
+
+    <ion-card class="social-wrapper">
+      <ion-card-content>
+        <div class="socials">
+          <ion-button class="btn-fb">
+              <ion-icon name="logo-facebook"></ion-icon>
+          </ion-button>
+          <ion-button class="btn-go">
+              <ion-icon name="logo-google"></ion-icon>
+          </ion-button>
+          <ion-button class="btn-tw">
+              <ion-icon name="logo-twitter"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

@@ -1,0 +1,143 @@
+<ion-content>
+  <div id= "header">
+    <div id="app-bar">
+      <ion-icon name="arrow-back" routerLink="/welcome"></ion-icon>
+      <div id="logo">
+        <img src="assets/logo.png" alt="logo" />
+      </div>
+    <div>
+  </div>
+
+  </div>
+
+  <h1>Sign Up</h1>
+  <p>Sign Up to create and manage your club</p>
+  </div>
+
+  <div class="wrapper">
+    <form [formGroup]="registerForm">
+      <ion-card class="form-wrapper">
+        <ion-card-content>
+          <ion-item>
+            <ion-icon name="person"></ion-icon>
+            <ion-input
+              placeholder="Fullname"
+              type="text"
+              formControlName="fullname"
+              >
+            </ion-input>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('fullname')
+              && fullname.errors?.['required']">
+              Fullname field is required
+            </ion-note>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('fullname')
+              && fullname.errors?.['pattern']">
+              Enter a valid phone number
+            </ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="mail"></ion-icon>
+            <ion-input
+              placeholder="Email"
+              type="email"
+              formControlName="email"
+              >
+            </ion-input>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('email')
+              && email.errors?.['required']">
+              Email field is required
+            </ion-note>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('email')
+              && email.errors?.['email']">
+              Enter a valid email
+            </ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="call"></ion-icon>
+            <ion-input
+              placeholder="Phone number"
+              type="text"
+              formControlName="phone"
+              >
+            </ion-input>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('phone')
+              && phone.errors?.['required']">
+              Phone number field is required
+            </ion-note>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('phone')
+              && phone.errors?.['pattern']">
+              Enter a valid phone number
+            </ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="lock-closed"></ion-icon>
+            <ion-input
+              placeholder="Password"
+              type="password"
+              formControlName="password"
+              >
+            </ion-input>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('password')
+              && password.errors?.['required']">
+              Password field is required
+            </ion-note>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('password')
+              && password.errors?.['pattern']">
+              Password must contain at least 8 characters, lowercase and uppercase letters, numbers and special characters.
+            </ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="lock-closed"></ion-icon>
+            <ion-input
+              placeholder="Repeat password"
+              type="password"
+              formControlName="repeatPassword"
+              >
+            </ion-input>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('repeatPassword')
+              && repeatPassword.errors?.['required']">
+              Repeat password field is required
+            </ion-note>
+            <ion-note slot="helper" *ngIf="
+              (repeatPassword.touched || repeatPassword.dirty)
+              && password.value !== ''
+              && password.value !== repeatPassword.value ">
+              Password does not match
+            </ion-note>
+          </ion-item>
+          <ion-button [disabled]="registerForm.invalid" expand="block" (click)="register()">Sign Up</ion-button>
+        </ion-card-content>
+      </ion-card>
+    </form>
+
+    <div class="line-text">
+      <span class="lines"></span>
+      <span class="text">Connect using</span>
+    </div>
+
+    <ion-card class="social-wrapper">
+      <ion-card-content>
+        <div class="socials">
+          <ion-button class="btn-fb">
+              <ion-icon name="logo-facebook"></ion-icon>
+          </ion-button>
+          <ion-button class="btn-go">
+              <ion-icon name="logo-google"></ion-icon>
+          </ion-button>
+          <ion-button class="btn-tw">
+              <ion-icon name="logo-twitter"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

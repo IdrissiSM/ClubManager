@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "clubmanagerapp-23ea2": {
+      "hosting": {
+        "app": [
+          "clubmanagerapp-23ea2"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "clubmanagerapp-23ea2"
+  }
+}
