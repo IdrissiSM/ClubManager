@@ -24,12 +24,13 @@ ion-title {
 }
 
 ion-tab-button{
-  font-size: 13px;
-  --background-focused: #5260ff;
-  --color-selected: #5260ff;
-  --padding-end: 10px;
-  --padding-start: 10px;
-  --padding-bottom: 1px;
+  font-size: 12px;
+  --color-selected: #eb445a;
+  --background-focused : #eb445a;
+  --padding-end: 0px;
+  --padding-start: 0px;
+  --padding-bottom: 0px;
+  --padding-top: 0px;
   --margin-left:0px;
   --margin-right:0px;
   max-width:100px;
@@ -37,6 +38,10 @@ ion-tab-button{
   ion-icon{
       font-size: 67.5px;
   }
+}
+ion-tab-button{
+  --padding-bottom: 2px;
+  --padding-top: 2px;
 }
 
 ion-fab{

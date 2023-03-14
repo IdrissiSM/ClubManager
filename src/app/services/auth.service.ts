@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Auth, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
 import { createUserWithEmailAndPassword } from '@firebase/auth';
-import { User } from '../Models/User';
-import { Firestore, collection, addDoc } from '@angular/fire/firestore';
+import { User } from '../models/User';
+import { Firestore, collection, addDoc, collectionData } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -26,18 +26,17 @@ export class AuthService {
           fullname : user.fullname,
           email : user.email,
           phone : user.phone,
-        }).then( () => {
-          console.log("data saved !")
-          return true;
-        }).catch((err) => {
-          console.log(err);
-          return false;
         })
       })
       return true;
     } catch (error) {
       return false;
     }
+  }
+
+  getAllUsers(){
+    const collectionInstance = collection(this.firestore,'users');
+    return collectionData(collectionInstance)
   }
 
 

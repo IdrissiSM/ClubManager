@@ -1,7 +1,17 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button >
+        <ion-icon slot="icon-only" name="person"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-searchbar color="primary" placeholder="Search" cancel-button-text="Custom Cancel" show-clear-button="always"></ion-searchbar>
-    <!-- <ion-progress-bar color="success" type="indeterminate"></ion-progress-bar> -->
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon slot="icon-only" name="log-out"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-progress-bar color="success" type="indeterminate"></ion-progress-bar>
   </ion-toolbar>
   <ion-toolbar>
     <ion-segment value="all" [(ngModel)]="taskListSegment">
@@ -16,7 +26,7 @@
 </ion-header>
 
 
-<ion-content>
+<ion-content [fullscreen]="true">
   <ion-fab slot="fixed" horizontal="end">
     <ion-fab-button color="primary">
       <ion-icon name="add"></ion-icon>
@@ -24,7 +34,7 @@
   </ion-fab>
 
 
-  <ion-list *ngIf="!loaded">
+  <ion-list>
     <ion-list-header>
       <ion-skeleton-text [animated]="true" style="width: 80px"></ion-skeleton-text>
     </ion-list-header>
@@ -68,7 +78,7 @@
     </ng-template>
   </ion-modal>
 
-  <ion-list *ngIf="loaded">
+  <ion-list>
     <ion-item lines="none">
       <ion-card color="success">
         <ion-card-header>
@@ -139,8 +149,6 @@
     </ion-item>
   </ion-list>
 
-  <ion-button (click)="loaded = !loaded">Toggle</ion-button>
-
   <ion-infinite-scroll>
     <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
   </ion-infinite-scroll>
@@ -149,22 +157,3 @@
     <ion-router-outlet></ion-router-outlet>
   </ion-tabs>
 </ion-content>
-
-<ion-tab-bar slot="bottom">
-  <ion-tab-button tab="home">
-    <ion-icon name="home"></ion-icon>
-    Home
-  </ion-tab-button>
-  <ion-tab-button selected="true" tab="Tasks">
-    <ion-icon name="clipboard"></ion-icon>
-    Tasks
-  </ion-tab-button>
-  <ion-tab-button tab="Notifications">
-    <ion-icon name="Notifications"></ion-icon>
-    Notifications
-  </ion-tab-button>
-  <ion-tab-button tab="search">
-    <ion-icon name="people"></ion-icon>
-    Members
-  </ion-tab-button>
-</ion-tab-bar>

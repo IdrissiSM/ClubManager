@@ -1,4 +1,4 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-button (click)="profil()">
@@ -11,10 +11,10 @@
         <ion-icon slot="icon-only" name="log-out"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <!-- <ion-progress-bar color="success" type="indeterminate"></ion-progress-bar> -->
+    <ion-progress-bar color="success" type="indeterminate"></ion-progress-bar>
   </ion-toolbar>
   <ion-toolbar>
-    <ion-segment value="all" [(ngModel)]="taskListSegment">
+    <ion-segment value="all">
       <ion-segment-button value="My_tasks" selected="true">
         <ion-label>My tasks</ion-label>
       </ion-segment-button>
@@ -34,7 +34,7 @@
   </ion-fab>
 
 
-  <ion-list *ngIf="!loaded">
+  <ion-list>
     <ion-list-header>
       <ion-skeleton-text [animated]="true" style="width: 80px"></ion-skeleton-text>
     </ion-list-header>
@@ -78,12 +78,12 @@
     </ng-template>
   </ion-modal>
 
-  <ion-list *ngIf="loaded">
+  <ion-list>
     <ion-item lines="none">
       <ion-card color="success">
         <ion-card-header>
           <ion-row class="ion-justify-content-end ion-align-items-end">
-            <ion-icon (click)="this.statusModel = !this.statusModel;" name="ellipsis-vertical-outline"></ion-icon>
+            <ion-icon name="ellipsis-vertical-outline"></ion-icon>
           </ion-row>
           <ion-card-title>Task Title</ion-card-title>
           <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
@@ -149,8 +149,6 @@
     </ion-item>
   </ion-list>
 
-  <ion-button (click)="loaded = !loaded">Toggle</ion-button>
-
   <ion-infinite-scroll>
     <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
   </ion-infinite-scroll>
@@ -165,16 +163,37 @@
     <ion-icon name="home"></ion-icon>
     Home
   </ion-tab-button>
-  <ion-tab-button selected="true" tab="Tasks">
+  <ion-tab-button tab="tasks">
     <ion-icon name="clipboard"></ion-icon>
     Tasks
+  </ion-tab-button>
+  <ion-tab-button selected="true" tab="profil">
+    <ion-icon name="person"></ion-icon>
+    Profil
   </ion-tab-button>
   <ion-tab-button tab="Notifications">
     <ion-icon name="Notifications"></ion-icon>
     Notifications
   </ion-tab-button>
-  <ion-tab-button tab="search">
+  <ion-tab-button tab="members">
     <ion-icon name="people"></ion-icon>
     Members
   </ion-tab-button>
 </ion-tab-bar>
+ -->
+
+ <ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      home Tab
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Home Tab</ion-title>
+    </ion-toolbar>
+  </ion-header>
+</ion-content>

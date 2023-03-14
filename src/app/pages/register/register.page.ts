@@ -1,5 +1,5 @@
 import { AuthService } from './../../services/auth.service';
-import { User } from './../../Models/User';
+import { User } from '../../models/User';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { LoadingController, ToastController } from '@ionic/angular';
@@ -74,10 +74,8 @@ export class RegisterPage implements OnInit {
       message: 'Creating account...',
     });
     await loading.present()
-
     const user = await this.authService.register(this.newUser)
     await loading.dismiss()
-
     if(user){
       this.router.navigateByUrl("/login", {replaceUrl : true});
     }else{
@@ -89,7 +87,6 @@ export class RegisterPage implements OnInit {
       await toast.present();
     }
   }
-
 
   invalidTouchedDirtyFormControl(formControlName : string){
     return this.registerForm.controls[formControlName]?.invalid &&

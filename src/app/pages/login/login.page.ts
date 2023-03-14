@@ -50,7 +50,7 @@ export class LoginPage implements OnInit {
     await loading.dismiss()
 
     if(user){
-      this.router.navigateByUrl("/home", {replaceUrl : true});
+      this.router.navigateByUrl("/tabs", {replaceUrl : true});
     }else{
       const toast = await this.toastController.create({
         message: 'Error : Login failed, Please try again !',

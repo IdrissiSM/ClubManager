@@ -4,15 +4,13 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
-  selector: 'app-tasks',
-  templateUrl: './tasks.page.html',
-  styleUrls: ['./tasks.page.scss'],
+  selector: 'app-profil',
+  templateUrl: './profil.page.html',
+  styleUrls: ['./profil.page.scss'],
 })
-export class TasksPage implements OnInit {
+export class ProfilPage implements OnInit {
 
-  taskListSegment = "My_tasks";
-  loaded !: boolean;
-  statusModel = false;
+  loading : boolean = true;
 
   constructor(
     private router : Router,
@@ -21,12 +19,17 @@ export class TasksPage implements OnInit {
   { }
 
   ngOnInit() {
-    this.loaded = true;
   }
 
   async logout(){
     await this.authService.logout()
     this.router.navigateByUrl("/welcome",{replaceUrl : true})
+  }
+
+  getAllUsers(){
+    this.authService.getAllUsers().subscribe( (data) => {
+      console.log(data)
+    })
   }
 
 }

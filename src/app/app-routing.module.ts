@@ -5,25 +5,36 @@ import {
     redirectUnauthorizedTo,
     redirectLoggedInTo,
     canActivate
-  }
-from '@angular/fire/auth-guard';
+  } from '@angular/fire/auth-guard';
+import{TabsPageModule} from './pages/tabs/tabs.module';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['']);
 const redirectLoggedInToHome = () => redirectLoggedInTo(['welcome']);
 
 const routes: Routes = [
   {
-    path: 'welcome',
-    loadChildren: () => import('./pages/welcome/welcome.module').then( m => m.WelcomePageModule),
-    // ...canActivate(redirectUnauthorizedToLogin)
-
-  },
-  {
     path: '',
     redirectTo: 'welcome',
     pathMatch: 'full',
     // ...canActivate(redirectLoggedInToHome)
   },
+  {
+    path: 'welcome',
+    loadChildren: () => import('./pages/welcome/welcome.module').then( m => m.WelcomePageModule),
+    // ...canActivate(redirectUnauthorizedToLogin)
+  },
+  {
+    path: 'tabs',
+    loadChildren: () => import('./pages/tabs/tabs.module').then( m => m.TabsPageModule)
+  },
+  // {
+  //   path: 'profil',
+  //   loadChildren: () => import('./pages/profil/profil.module').then( m => m.ProfilPageModule)
+  // },
+  // {
+  //   path: 'tasks',
+  //   loadChildren: () => import('./pages/tasks/tasks.module').then( m => m.TasksPageModule)
+  // },
   {
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
@@ -32,13 +43,10 @@ const routes: Routes = [
     path: 'register',
     loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
   },
+
+
   {
-    path: 'home',
-    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
-  },
-  {
-    path: 'tasks',
-    loadChildren: () => import('./pages/tasks/tasks.module').then( m => m.TasksPageModule)
+    path: '**', redirectTo: 'welcome'
   },
 ];
 
