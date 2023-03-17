@@ -1,0 +1,224 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-searchbar id="searchbar"></ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon slot="icon-only" name="log-out" size="large" class="white"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="title ion-padding">
+    <h1 class="ion-text-center">Members List</h1>
+  </div>
+  <div class="members-count ion-text-center ion-margin">
+    <div>
+      <h1>50</h1>
+      <p>Total</p>
+    </div>
+    <div>
+      <h1>3</h1>
+      <p>Leaders</p>
+    </div>
+    <div>
+      <h1>7</h1>
+      <p>Managers</p>
+    </div>
+    <div>
+      <h1>40</h1>
+      <p>Members</p>
+    </div>
+  </div>
+  <div>
+    <ion-item>
+      <h3>Leadership cell</h3>
+    </ion-item>
+    <ion-list>
+      <ion-item>
+        <ion-avatar slot="start" style="background-color: blueviolet;" class="ion-text-center">
+          <h3 style="margin : 8px 0px;">F</h3>
+        </ion-avatar>
+        <ion-label>
+          full name
+        </ion-label>
+        <ion-button fill="clear" id="click-trigger-1">
+          <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="click-trigger-1" triggerAction="click">
+          <ng-template>
+            <ion-content>
+              <ion-item>
+                <ion-icon name="person-remove" slot="start"></ion-icon>
+                Remove
+              </ion-item>
+              <ion-item color="danger">
+                <ion-icon name="trash" slot="start"></ion-icon>
+                exclude
+              </ion-item>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
+      <ion-item>
+        <ion-avatar slot="start" style="background-color: darkgoldenrod;" class="ion-text-center">
+          <h3 style="margin : 8px 0px;">A</h3>
+        </ion-avatar>
+        <ion-label>
+          full name
+        </ion-label>
+        <ion-button fill="clear" id="click-trigger-2">
+          <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="click-trigger-2" triggerAction="click">
+          <ng-template>
+            <ion-content>
+              <ion-item>
+                <ion-icon name="person-remove" slot="start"></ion-icon>
+                Remove
+              </ion-item>
+              <ion-item>
+                <ion-icon name="trash" slot="start"></ion-icon>
+                exclude
+              </ion-item>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
+      <ion-item>
+        <ion-avatar slot="start" style="background-color: brown;" class="ion-text-center">
+          <h3 style="margin : 8px 0px;">M</h3>
+        </ion-avatar>
+        <ion-label>
+          full name
+        </ion-label>
+        <ion-button fill="clear" id="click-trigger-3">
+          <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="click-trigger-3" triggerAction="click">
+          <ng-template>
+            <ion-content>
+              <ion-item>
+                <ion-icon name="person-remove" slot="start"></ion-icon>
+                Remove
+              </ion-item>
+              <ion-item>
+                <ion-icon name="trash" slot="start"></ion-icon>
+                exclude
+              </ion-item>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
+    </ion-list>
+  </div>
+  <div>
+    <ion-item>
+      <h3>Media cell</h3>
+    </ion-item>
+    <ion-list>
+      <ion-item>
+        <ion-avatar slot="start">
+          <img src="../../assets/images/profile.svg" alt=""/>
+        </ion-avatar>
+        <ion-label>
+          full name
+        </ion-label>
+        <ion-button fill="clear" id="click-trigger-4">
+          <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="click-trigger-4" triggerAction="click">
+          <ng-template>
+            <ion-content>
+              <ion-item>
+                <ion-icon name="person-remove" slot="start"></ion-icon>
+                Remove
+              </ion-item>
+              <ion-item>
+                <ion-icon name="trash" slot="start"></ion-icon>
+                exclude
+              </ion-item>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
+      <ion-item>
+        <ion-avatar slot="start">
+          <img src="../../assets/images/profile.svg" alt=""/>
+        </ion-avatar>
+        <ion-label>
+          full name
+        </ion-label>
+        <ion-button fill="clear" id="click-trigger-5">
+          <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="click-trigger-5" triggerAction="click">
+          <ng-template>
+            <ion-content>
+              <ion-item>
+                <ion-icon name="person-remove" slot="start"></ion-icon>
+                Remove
+              </ion-item>
+              <ion-item>
+                <ion-icon name="trash" slot="start"></ion-icon>
+                exclude
+              </ion-item>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
+    </ion-list>
+  </div>
+  <div>
+    <ion-item>
+      <h3>Members without cell</h3>
+    </ion-item>
+    <ion-list>
+      <ion-item>
+        <ion-avatar slot="start">
+          <img src="../../assets/images/profile.svg" alt=""/>
+        </ion-avatar>
+        <ion-label>
+          full name
+        </ion-label>
+        <ion-button fill="clear" id="click-trigger-6">
+          <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="click-trigger-6" triggerAction="click">
+          <ng-template>
+            <ion-content>
+              <ion-item>
+                <ion-icon name="person-add" slot="start"></ion-icon>
+                Define role
+              </ion-item>
+              <ion-item>
+                <ion-icon name="trash" slot="start"></ion-icon>
+                exclude
+              </ion-item>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
+      <ion-item>
+        <ion-avatar slot="start">
+          <img src="../../assets/images/profile.svg" alt=""/>
+        </ion-avatar>
+        <ion-label>
+          full name
+        </ion-label>
+        <ion-button fill="clear" id="click-trigger-7">
+          <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="click-trigger-7" triggerAction="click">
+          <ng-template>
+            <ion-content>
+              <ion-item>Define role</ion-item>
+              <ion-item>Remove</ion-item>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>

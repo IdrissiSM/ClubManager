@@ -14,6 +14,10 @@ export class TasksPage implements OnInit {
   loaded !: boolean;
   statusModel = false;
 
+  customActionSheetOptions = {
+    header: 'Filter tasks',
+  };
+
   constructor(
     private router : Router,
     private auth : Auth,

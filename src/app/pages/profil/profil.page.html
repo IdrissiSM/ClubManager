@@ -1,28 +1,81 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-button >
-        <ion-icon slot="icon-only" name="person"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-searchbar color="primary" placeholder="Search" cancel-button-text="Custom Cancel" show-clear-button="always"></ion-searchbar>
+    <ion-searchbar id="searchbar"></ion-searchbar>
     <ion-buttons slot="end">
-      <ion-button (click)="logout()">
-        <ion-icon slot="icon-only" name="log-out"></ion-icon>
+      <ion-button>
+        <ion-icon slot="icon-only" name="log-out" size="large" class="white"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-progress-bar *ngIf="loading" color="success" type="indeterminate"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-fab slot="fixed" horizontal="end">
-    <ion-fab-button color="primary">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+<ion-content class="ion-padding">
+  <!-- <div class="profile-header">
+    <img src="../../assets/images/profile.svg" alt="profile picture" class="profile-picture">
+    <h2 class="profile-name">John Doe</h2>
+    <p class="profile-description">Lorem ipsum dolor sit amet.</p>
+  </div> -->
+  <div class="container ion-margin">
+    <div class="outer"
+      style="background-image: url(../../assets/images/profile.svg);">
+        <div class="inner"(click)="modifyProfile()">
+           <ion-icon name="camera" class="camera-icon"></ion-icon>
+        </div>
+     </div>
+  </div>
+  <div>
+    <form>
+      <ion-toolbar>
+        <ion-item>
+          <ion-label position="stacked">Fullname</ion-label>
+          <div class="flex">
+            <p *ngIf="!editFullname">Firstname & Lastname</p>
+            <ion-input *ngIf="editFullname" value="Firstname & Lastname"></ion-input>
+          </div>
+        </ion-item>
+        <ion-buttons slot="secondary">
+          <ion-button (click)="editInput('fullname')">
+            <ion-icon slot="icon-only" name="create"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title>Icon Buttons</ion-title>
+      </ion-toolbar>
 
-  <ion-tabs>
-    <ion-router-outlet></ion-router-outlet>
-  </ion-tabs>
+      <ion-toolbar>
+        <ion-item>
+          <ion-label position="stacked">Email</ion-label>
+          <div class="flex">
+            <p *ngIf="!editEmail">name@gmail.com</p>
+            <ion-input *ngIf="editEmail" value="name@gmail.com"></ion-input>
+          </div>
+        </ion-item>
+        <ion-buttons slot="secondary">
+          <ion-button (click)="editInput('email')">
+            <ion-icon slot="icon-only" name="create"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title>Icon Buttons</ion-title>
+      </ion-toolbar>
+
+      <ion-toolbar>
+        <ion-item>
+          <ion-label position="stacked">Phone number</ion-label>
+          <div class="flex">
+            <p *ngIf="!editPhone">0612345678</p>
+            <ion-input *ngIf="editPhone" value="0612345678"></ion-input>
+          </div>
+        </ion-item>
+        <ion-buttons slot="secondary">
+          <ion-button (click)="editInput('phone')">
+            <ion-icon slot="icon-only" name="create"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title>Icon Buttons</ion-title>
+      </ion-toolbar>
+      <ion-item lines="none">
+        <ion-button color="success">Save</ion-button>
+        <ion-button color="danger">Log Out</ion-button>
+      </ion-item>
+    </form>
+  </div>
 </ion-content>

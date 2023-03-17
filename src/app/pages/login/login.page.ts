@@ -12,6 +12,8 @@ import { AuthService } from 'src/app/services/auth.service';
 export class LoginPage implements OnInit {
 
   loginForm !: FormGroup
+  passwordFieldType = 'password';
+  passwordIcon = 'eye';
 
   constructor(
     private formBuilder : FormBuilder,
@@ -70,6 +72,12 @@ export class LoginPage implements OnInit {
     return this.loginForm.controls[formControlName]?.invalid &&
       (this.loginForm.controls[formControlName]?.touched
         || this.loginForm.controls[formControlName]?.dirty);
+  }
+
+
+  toggleShowPassword(){
+    this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
+    this.passwordIcon = this.passwordIcon === 'eye' ? 'eye-off' : 'eye';
   }
 
 }

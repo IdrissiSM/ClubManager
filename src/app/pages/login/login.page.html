@@ -43,12 +43,14 @@
           <ion-item>
             <ion-icon name="lock-closed"></ion-icon>
             <ion-input
+              #passwordField
               placeholder="Password"
-              type="password"
+              [type]="passwordFieldType"
               formControlName="password"
               [class.is-invalid]="invalidTouchedDirtyFormControl('password')"
               >
             </ion-input>
+            <ion-icon [name]="passwordIcon" slot="end" (click)="toggleShowPassword()"></ion-icon>
             <ion-note slot="error" *ngIf="
               invalidTouchedDirtyFormControl('password')
               && password.errors?.['required']">

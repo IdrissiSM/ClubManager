@@ -1,199 +1,110 @@
-<!-- <ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-button (click)="profil()">
-        <ion-icon slot="icon-only" name="person"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-searchbar color="primary" placeholder="Search" cancel-button-text="Custom Cancel" show-clear-button="always"></ion-searchbar>
+    <ion-searchbar id="searchbar"></ion-searchbar>
     <ion-buttons slot="end">
-      <ion-button (click)="logout()">
-        <ion-icon slot="icon-only" name="log-out"></ion-icon>
+      <ion-button>
+        <ion-icon slot="icon-only" name="log-out" size="large" class="white" (click)="logout()"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-progress-bar color="success" type="indeterminate"></ion-progress-bar>
-  </ion-toolbar>
-  <ion-toolbar>
-    <ion-segment value="all">
-      <ion-segment-button value="My_tasks" selected="true">
-        <ion-label>My tasks</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="Assigned_tasks">
-        <ion-label>Assigned tasks</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-  </ion-toolbar>
-</ion-header>
-
-
-<ion-content>
-  <ion-fab slot="fixed" horizontal="end">
-    <ion-fab-button color="primary">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-
-
-  <ion-list>
-    <ion-list-header>
-      <ion-skeleton-text [animated]="true" style="width: 80px"></ion-skeleton-text>
-    </ion-list-header>
-    <ion-item>
-      <ion-thumbnail slot="start">
-        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-      </ion-thumbnail>
-      <ion-label>
-        <h3>
-          <ion-skeleton-text [animated]="true" style="width: 80%;"></ion-skeleton-text>
-        </h3>
-        <p>
-          <ion-skeleton-text [animated]="true" style="width: 60%;"></ion-skeleton-text>
-        </p>
-        <p>
-          <ion-skeleton-text [animated]="true" style="width: 30%;"></ion-skeleton-text>
-        </p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
-
-  <ion-modal id="example-modal" #modal>
-    <ng-template>
-      <div class="wrapper">
-        <h1>Dialog header</h1>
-        <ion-list lines="none">
-          <ion-item button="true" detail="false" (click)="modal.dismiss()">
-            <ion-icon name="person-circle"></ion-icon>
-            <ion-label>Item 1</ion-label>
-          </ion-item>
-          <ion-item button="true" detail="false" (click)="modal.dismiss()">
-            <ion-icon name="person-circle"></ion-icon>
-            <ion-label>Item 2</ion-label>
-          </ion-item>
-          <ion-item button="true" detail="false" (click)="modal.dismiss()">
-            <ion-icon name="person-circle"></ion-icon>
-            <ion-label>Item 3</ion-label>
-          </ion-item>
-        </ion-list>
-      </div>
-    </ng-template>
-  </ion-modal>
-
-  <ion-list>
-    <ion-item lines="none">
-      <ion-card color="success">
-        <ion-card-header>
-          <ion-row class="ion-justify-content-end ion-align-items-end">
-            <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-          </ion-row>
-          <ion-card-title>Task Title</ion-card-title>
-          <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-          Here's a small text description for the card content. Nothing more, nothing less.
-        </ion-card-content>
-        <ion-row class="ion-justify-content-end ion-align-items-end">
-          <ion-button class="card_button">Status</ion-button>
-        </ion-row>
-      </ion-card>
-    </ion-item>
-    <ion-item lines="none">
-      <ion-card color="success">
-        <ion-card-header>
-          <ion-row class="ion-justify-content-end ion-align-items-end">
-            <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-          </ion-row>
-          <ion-card-title>Task Title</ion-card-title>
-          <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-          Here's a small text description for the card content. Nothing more, nothing less.
-        </ion-card-content>
-        <ion-row class="ion-justify-content-end ion-align-items-end">
-          <ion-button class="card_button">Status</ion-button>
-        </ion-row>
-      </ion-card>
-    </ion-item>
-    <ion-item lines="none">
-      <ion-card color="success">
-        <ion-card-header>
-          <ion-row class="ion-justify-content-end ion-align-items-end">
-            <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-          </ion-row>
-          <ion-card-title>Task Title</ion-card-title>
-          <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-          Here's a small text description for the card content. Nothing more, nothing less.
-        </ion-card-content>
-        <ion-row class="ion-justify-content-end ion-align-items-end">
-          <ion-button class="card_button">Status</ion-button>
-        </ion-row>
-      </ion-card>
-    </ion-item>
-    <ion-item lines="none">
-      <ion-card color="success">
-        <ion-card-header>
-          <ion-row class="ion-justify-content-end ion-align-items-end">
-            <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-          </ion-row>
-          <ion-card-title>Task Title</ion-card-title>
-          <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-          Here's a small text description for the card content. Nothing more, nothing less.
-        </ion-card-content>
-        <ion-row class="ion-justify-content-end ion-align-items-end">
-          <ion-button class="card_button">Status</ion-button>
-        </ion-row>
-      </ion-card>
-    </ion-item>
-  </ion-list>
-
-  <ion-infinite-scroll>
-    <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
-
-  <ion-tabs>
-    <ion-router-outlet></ion-router-outlet>
-  </ion-tabs>
-</ion-content>
-
-<ion-tab-bar slot="bottom">
-  <ion-tab-button tab="home">
-    <ion-icon name="home"></ion-icon>
-    Home
-  </ion-tab-button>
-  <ion-tab-button tab="tasks">
-    <ion-icon name="clipboard"></ion-icon>
-    Tasks
-  </ion-tab-button>
-  <ion-tab-button selected="true" tab="profil">
-    <ion-icon name="person"></ion-icon>
-    Profil
-  </ion-tab-button>
-  <ion-tab-button tab="Notifications">
-    <ion-icon name="Notifications"></ion-icon>
-    Notifications
-  </ion-tab-button>
-  <ion-tab-button tab="members">
-    <ion-icon name="people"></ion-icon>
-    Members
-  </ion-tab-button>
-</ion-tab-bar>
- -->
-
- <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      home Tab
-    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Home Tab</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-list>
+    <ion-item lines="none">
+      <ion-card class="club-card">
+        <div style="display: flex;">
+          <ion-avatar class="ion-margin">
+            <img src="../../assets/images/default.svg"/>
+          </ion-avatar>
+          <ion-card-header>
+            <ion-card-title>Card Title</ion-card-title>
+            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+          </ion-card-header>
+        </div>
+        <ion-button fill="clear" id="click-trigger-1">
+          <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="click-trigger-1" triggerAction="click">
+          <ng-template>
+            <ion-content>
+              <ion-item>
+                <ion-icon name="copy" slot="start"></ion-icon>
+                Copy code
+              </ion-item>
+              <ion-item color="danger">
+                <ion-icon name="log-out" slot="start"></ion-icon>
+                Leave
+              </ion-item>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-card>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-card class="club-card">
+        <div style="display: flex;">
+          <ion-avatar class="ion-margin">
+            <img src="../../assets/images/default.svg"/>
+          </ion-avatar>
+          <ion-card-header>
+            <ion-card-title>Card Title</ion-card-title>
+            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+          </ion-card-header>
+        </div>
+        <ion-button fill="clear" id="click-trigger-2">
+          <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="click-trigger-2" triggerAction="click">
+          <ng-template>
+            <ion-content>
+              <ion-item>
+                <ion-icon name="copy" slot="start"></ion-icon>
+                Copy code
+              </ion-item>
+              <ion-item color="danger">
+                <ion-icon name="log-out" slot="start"></ion-icon>
+                Leave
+              </ion-item>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-card>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-card class="club-card">
+        <div style="display: flex;">
+          <ion-avatar class="ion-margin">
+            <img src="../../assets/images/default.svg"/>
+          </ion-avatar>
+          <ion-card-header>
+            <ion-card-title>Card Title</ion-card-title>
+            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+          </ion-card-header>
+        </div>
+        <ion-button fill="clear" id="click-trigger-3">
+          <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="click-trigger-3" triggerAction="click">
+          <ng-template>
+            <ion-content>
+              <ion-item>
+                <ion-icon name="copy" slot="start"></ion-icon>
+                Copy code
+              </ion-item>
+              <ion-item color="danger">
+                <ion-icon name="log-out" slot="start"></ion-icon>
+                Leave
+              </ion-item>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-card>
+    </ion-item>
+  </ion-list>
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="createClub()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

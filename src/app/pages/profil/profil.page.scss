@@ -54,29 +54,83 @@ ion-fab{
 }
 
 
-ion-modal#example-modal {
-  --width: fit-content;
-  --min-width: 250px;
-  --height: fit-content;
-  --border-radius: 6px;
-  --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
+.profile-header {
+  text-align: center;
+  padding: 20px;
 }
 
-ion-modal#example-modal h1 {
-  margin: 20px 20px 10px 20px;
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
-ion-modal#example-modal ion-icon {
-  margin-right: 6px;
-
-  width: 48px;
-  height: 48px;
-
-  padding: 4px 0;
-
-  color: #aaaaaa;
+.profile-name {
+  margin-top: 10px;
 }
 
-ion-modal#example-modal .wrapper {
-  margin-bottom: 10px;
+.profile-description {
+  margin-top: 10px;
+}
+
+
+
+
+
+
+
+.center{
+  display: flex!important;
+   align-content: center!important;
+   align-items: center!important;
+}
+.center-content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.center-logo{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.container {
+  width: 150px;
+  height: 150px;
+  display: block;
+  margin: 0 auto;
+}
+.profile-pic {
+  width: 150px;
+  height: 150px;
+}
+.outer {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 150px !important; /* any size */
+  max-height: 150px !important; /* any size */
+  margin: auto;
+  border-radius: 100%;
+  position: relative;
+  background-size: 150px 150px;
+}
+.inner {
+  background-color: var(--ion-color-tertiary);
+  width: 45px;
+  height: 45px;
+  border-radius: 100%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.camera-icon {
+  height: 30px;
+  width: 30px;
+  color: white;
 }

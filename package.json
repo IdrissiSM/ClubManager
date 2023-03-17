@@ -21,6 +21,7 @@
     "@angular/platform-browser-dynamic": "^15.0.0",
     "@angular/router": "^15.0.0",
     "@capacitor/app": "4.1.1",
+    "@capacitor/camera": "^4.1.4",
     "@capacitor/core": "4.7.0",
     "@capacitor/haptics": "4.1.0",
     "@capacitor/keyboard": "4.1.1",
@@ -29,12 +30,13 @@
     "@ionic/angular": "^6.1.9",
     "firebase": "^9.13.0",
     "ionicons": "^6.0.3",
+    "parse5-html-rewriting-stream": "^7.0.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^15.0.0",
+    "@angular-devkit/build-angular": "^15.2.3",
     "@angular-eslint/builder": "^15.0.0",
     "@angular-eslint/eslint-plugin": "^15.0.0",
     "@angular-eslint/eslint-plugin-template": "^15.0.0",

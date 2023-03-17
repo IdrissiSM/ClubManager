@@ -22,30 +22,22 @@ export class RegisterPage implements OnInit {
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
-      fullname : ['',[
+      name : ['',[
         Validators.required
       ]],
-      email : ['',[
+      description : ['',[
         Validators.required,
-        Validators.email
       ]],
-      phone : ['',[
+      category : ['',[
         Validators.required,
-        Validators.pattern('[- +()0-9]+')
       ]],
-      password : ['',[
-        Validators.required,
-        // At least 8 characters in length Lowercase letters Uppercase letters Numbers Special characters.
-        Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}')
-      ]],
-      repeatPassword : ['',[
-        Validators.required
-      ]]
     })
   }
 
   registerForm !: FormGroup
   newUser !: User
+  passwordFieldType = 'password';
+  passwordIcon = 'eye';
 
   get fullname(){
     return this.registerForm.controls['fullname'];
@@ -92,5 +84,10 @@ export class RegisterPage implements OnInit {
     return this.registerForm.controls[formControlName]?.invalid &&
       (this.registerForm.controls[formControlName]?.touched
         || this.registerForm.controls[formControlName]?.dirty);
+  }
+
+  toggleShowPassword(){
+    this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
+    this.passwordIcon = this.passwordIcon === 'eye' ? 'eye-off' : 'eye';
   }
 }

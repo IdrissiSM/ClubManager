@@ -43,11 +43,16 @@ const routes: Routes = [
     path: 'register',
     loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
   },
-
-
   {
-    path: '**', redirectTo: 'welcome'
+    path: 'create-club',
+    loadChildren: () => import('./pages/create-club/create-club.module').then( m => m.CreateClubPageModule)
   },
+
+
+
+  // {
+  //   path: '**', redirectTo: 'welcome'
+  // },
 ];
 
 @NgModule({

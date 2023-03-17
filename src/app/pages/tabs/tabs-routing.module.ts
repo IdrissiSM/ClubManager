@@ -21,6 +21,10 @@ const routes: Routes = [
         loadChildren: () => import('../tasks/tasks.module').then( m => m.TasksPageModule)
       },
       {
+        path: 'members',
+        loadChildren: () => import('../members/members.module').then( m => m.MembersPageModule)
+      },
+      {
         path: '',
         redirectTo: '/tabs/home',
         pathMatch: 'full'

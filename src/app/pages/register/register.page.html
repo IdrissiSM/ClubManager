@@ -79,10 +79,11 @@
             <ion-icon name="lock-closed"></ion-icon>
             <ion-input
               placeholder="Password"
-              type="password"
+              [type]="passwordFieldType"
               formControlName="password"
               >
             </ion-input>
+            <ion-icon [name]="passwordIcon" slot="end" (click)="toggleShowPassword()"></ion-icon>
             <ion-note slot="error" *ngIf="
               invalidTouchedDirtyFormControl('password')
               && password.errors?.['required']">
@@ -98,10 +99,11 @@
             <ion-icon name="lock-closed"></ion-icon>
             <ion-input
               placeholder="Repeat password"
-              type="password"
+              [type]="passwordFieldType"
               formControlName="repeatPassword"
               >
             </ion-input>
+            <ion-icon [name]="passwordIcon" slot="end" (click)="toggleShowPassword()"></ion-icon>
             <ion-note slot="error" *ngIf="
               invalidTouchedDirtyFormControl('repeatPassword')
               && repeatPassword.errors?.['required']">
