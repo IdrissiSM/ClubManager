@@ -11,15 +11,15 @@
 
 <ion-content [fullscreen]="true">
   <ion-list>
-    <ion-item lines="none">
+    <ion-item lines="none" *ngFor="let club of Clubs">
       <ion-card class="club-card">
         <div style="display: flex;">
           <ion-avatar class="ion-margin">
-            <img src="../../assets/images/default.svg"/>
+            <img [src]="club.logoUrl"/>
           </ion-avatar>
           <ion-card-header>
-            <ion-card-title>Card Title</ion-card-title>
-            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+            <ion-card-title>{{club.name}}</ion-card-title>
+            <ion-card-subtitle>{{club.category}}</ion-card-subtitle>
           </ion-card-header>
         </div>
         <ion-button fill="clear" id="click-trigger-1">
@@ -28,6 +28,10 @@
         <ion-popover trigger="click-trigger-1" triggerAction="click">
           <ng-template>
             <ion-content>
+              <ion-item routerLink="/tabs/tasks" >
+                <ion-icon name="menu" slot="start"></ion-icon>
+                Détails
+              </ion-item>
               <ion-item>
                 <ion-icon name="copy" slot="start"></ion-icon>
                 Copy code
@@ -41,66 +45,7 @@
         </ion-popover>
       </ion-card>
     </ion-item>
-    <ion-item lines="none">
-      <ion-card class="club-card">
-        <div style="display: flex;">
-          <ion-avatar class="ion-margin">
-            <img src="../../assets/images/default.svg"/>
-          </ion-avatar>
-          <ion-card-header>
-            <ion-card-title>Card Title</ion-card-title>
-            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-          </ion-card-header>
-        </div>
-        <ion-button fill="clear" id="click-trigger-2">
-          <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
-        </ion-button>
-        <ion-popover trigger="click-trigger-2" triggerAction="click">
-          <ng-template>
-            <ion-content>
-              <ion-item>
-                <ion-icon name="copy" slot="start"></ion-icon>
-                Copy code
-              </ion-item>
-              <ion-item color="danger">
-                <ion-icon name="log-out" slot="start"></ion-icon>
-                Leave
-              </ion-item>
-            </ion-content>
-          </ng-template>
-        </ion-popover>
-      </ion-card>
-    </ion-item>
-    <ion-item lines="none">
-      <ion-card class="club-card">
-        <div style="display: flex;">
-          <ion-avatar class="ion-margin">
-            <img src="../../assets/images/default.svg"/>
-          </ion-avatar>
-          <ion-card-header>
-            <ion-card-title>Card Title</ion-card-title>
-            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-          </ion-card-header>
-        </div>
-        <ion-button fill="clear" id="click-trigger-3">
-          <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
-        </ion-button>
-        <ion-popover trigger="click-trigger-3" triggerAction="click">
-          <ng-template>
-            <ion-content>
-              <ion-item>
-                <ion-icon name="copy" slot="start"></ion-icon>
-                Copy code
-              </ion-item>
-              <ion-item color="danger">
-                <ion-icon name="log-out" slot="start"></ion-icon>
-                Leave
-              </ion-item>
-            </ion-content>
-          </ng-template>
-        </ion-popover>
-      </ion-card>
-    </ion-item>
+
   </ion-list>
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
     <ion-fab-button (click)="createClub()">

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Auth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { ActionSheetController } from '@ionic/angular';
@@ -16,7 +15,6 @@ export class ProfilPage implements OnInit {
 
   constructor(
     private router : Router,
-    private auth : Auth,
     private authService : AuthService,
     private actionSheetCtrl: ActionSheetController
   ) { }
@@ -49,7 +47,9 @@ export class ProfilPage implements OnInit {
   }
 
 
-  async modifyProfile(){
+  newProfilLogo : any
+  newProfilLogoDataUrl : any
+  async insertProfilLogo(){
     let sheet = await this.actionSheetCtrl.create({
       buttons:[
         {
@@ -57,10 +57,12 @@ export class ProfilPage implements OnInit {
           text: 'Take a picture ',
           handler: async () => {
             const capturedPhoto = await Camera.getPhoto({
-              resultType: CameraResultType.Uri,
               source: CameraSource.Camera,
-              quality: 100
+              quality: 100,
+              resultType: CameraResultType.DataUrl
             });
+            this.newProfilLogo = capturedPhoto
+            this.newProfilLogoDataUrl = capturedPhoto.dataUrl
           }
         },
         {
@@ -71,16 +73,18 @@ export class ProfilPage implements OnInit {
               source: CameraSource.Photos,
               quality: 90,
               allowEditing: false,
-              resultType: CameraResultType.Uri
+              resultType: CameraResultType.DataUrl
             });
-            console.log(image);
+            this.newProfilLogo = image
+            this.newProfilLogoDataUrl = image.dataUrl
           }
         },
         {
           icon: 'trash',
           text: 'remove ',
           handler: () => {
-
+            this.newProfilLogo = false
+            this.newProfilLogoDataUrl = false
           }
         }
       ]

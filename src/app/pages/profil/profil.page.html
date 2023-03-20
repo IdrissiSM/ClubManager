@@ -16,12 +16,22 @@
     <p class="profile-description">Lorem ipsum dolor sit amet.</p>
   </div> -->
   <div class="container ion-margin">
-    <div class="outer"
-      style="background-image: url(../../assets/images/profile.svg);">
-        <div class="inner"(click)="modifyProfile()">
-           <ion-icon name="camera" class="camera-icon"></ion-icon>
+    <div *ngIf="newProfilLogoDataUrl"
+      class="outer"
+      style="background-image: url('{{newProfilLogoDataUrl}}');"
+      >
+          <div class="inner"(click)="insertProfilLogo()">
+            <ion-icon name="camera" class="camera-icon"></ion-icon>
         </div>
-     </div>
+      </div>
+      <div *ngIf="!newProfilLogoDataUrl"
+      class="outer"
+      style="background-image: url(../../assets/images/profile.svg);"
+      >
+        <div class="inner"(click)="insertProfilLogo()">
+            <ion-icon name="camera" class="camera-icon"></ion-icon>
+        </div>
+      </div>
   </div>
   <div>
     <form>

@@ -1,16 +1,9 @@
-export class User {
-  id ?: string;
-  fullname !: string;
+export interface User {
+  id ?: string | null;
+  fullname : string;
   birthday ?: Date;
-  email !: string;
-  phone ?: string;
-  password !: string;
-  photoUrl !: string;
-
-  constructor(fullname : string, email :string, phone : string, password : string){
-    this.fullname = fullname;
-    this.email = email;
-    this.phone = phone;
-    this.password = password;
-  }
+  email : string;
+  phone : string;
+  photoUrl ?: string;
+  password : string;
 }

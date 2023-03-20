@@ -1,6 +1,7 @@
+import { ClubService } from './../../services/club.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ActionSheetController, AlertController, NavController } from '@ionic/angular';
+import { ActionSheetController, AlertController, NavController, LoadingController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -10,12 +11,16 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class HomePage implements OnInit {
 
+  Clubs !: any
+
   constructor(
     private router : Router,
     private authService : AuthService,
+    private loadingController : LoadingController,
     private actionSheetCtrl: ActionSheetController,
     private alertController: AlertController,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private clubService : ClubService
     )
   { }
 
@@ -60,11 +65,21 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit() {
+    this.getUserClubs()
   }
 
   async logout(){
     await this.authService.logout()
     this.router.navigateByUrl("/welcome",{replaceUrl : true})
+  }
+
+  async getUserClubs(){
+    const loading = await this.loadingController.create({
+      message: 'loading...',
+    });
+    await loading.present();
+    this.Clubs = await this.clubService.getUserClubs()
+    await loading.dismiss()
   }
 
 }

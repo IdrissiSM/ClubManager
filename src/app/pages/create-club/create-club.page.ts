@@ -1,9 +1,11 @@
+import { ClubService } from './../../services/club.service';
 import { Component, OnInit } from '@angular/core';
-import { ActionSheetController, LoadingController, NavController, ToastController } from '@ionic/angular';
+import { ActionSheetController, LoadingController, ToastController } from '@ionic/angular';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Club } from 'src/app/models/Club'
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-create-club',
@@ -13,38 +15,35 @@ import { Club } from 'src/app/models/Club'
 export class CreateClubPage implements OnInit {
 
   createClubForm !: FormGroup
-  newClub !: Club
+  newClub : Club = {
+    code : "",
+    name : "",
+    description : "",
+    category : "",
+  }
+  newClubLogo !: any
+  newClubLogoDataUrl !: any
 
   constructor(
     private actionSheetCtrl: ActionSheetController,
-    private navCtrl: NavController,
     private formBuilder : FormBuilder,
     private router : Router,
     private loadingController : LoadingController,
+    private clubService : ClubService,
     private toastController: ToastController
   ) { }
 
   ngOnInit() {
     this.createClubForm = this.formBuilder.group({
-      fullname : ['',[
+      name : ['',[
         Validators.required
       ]],
-      email : ['',[
-        Validators.required,
-        Validators.email
-      ]],
-      phone : ['',[
-        Validators.required,
-        Validators.pattern('[- +()0-9]+')
-      ]],
-      password : ['',[
-        Validators.required,
-        // At least 8 characters in length Lowercase letters Uppercase letters Numbers Special characters.
-        Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}')
-      ]],
-      repeatPassword : ['',[
+      description : ['',[
         Validators.required
-      ]]
+      ]],
+      category : ['',[
+        Validators.required
+      ]],
     })
   }
 
@@ -53,6 +52,9 @@ export class CreateClubPage implements OnInit {
   }
   get description(){
     return this.createClubForm.controls['description'];
+  }
+  get category(){
+    return this.createClubForm.controls['category'];
   }
 
   async insertClubLogo(){
@@ -63,10 +65,12 @@ export class CreateClubPage implements OnInit {
           text: 'Take a picture ',
           handler: async () => {
             const capturedPhoto = await Camera.getPhoto({
-              resultType: CameraResultType.Uri,
               source: CameraSource.Camera,
-              quality: 100
+              quality: 100,
+              resultType: CameraResultType.DataUrl
             });
+            this.newClubLogo = capturedPhoto
+            this.newClubLogoDataUrl = capturedPhoto.dataUrl
           }
         },
         {
@@ -77,21 +81,58 @@ export class CreateClubPage implements OnInit {
               source: CameraSource.Photos,
               quality: 90,
               allowEditing: false,
-              resultType: CameraResultType.Uri
+              resultType: CameraResultType.DataUrl
             });
-            console.log(image);
+            this.newClubLogo = image
+            this.newClubLogoDataUrl = image.dataUrl
           }
         },
         {
           icon: 'trash',
           text: 'remove ',
           handler: () => {
-
+            this.newClubLogo = false
+            this.newClubLogoDataUrl = false
           }
         }
       ]
     });
     await sheet.present();
+  }
+
+
+  async createClub(){
+    let clubUid = uuidv4();
+    let defaultLogoUrl = "../../assets/images/default.svg"
+
+    this.newClub.code = clubUid;
+    this.newClub.name = this.name.value;
+    this.newClub.description = this.description.value;
+    this.newClub.category = this.category.value;
+    this.newClub.logoUrl = defaultLogoUrl;
+
+    const loading = await this.loadingController.create({
+      message: 'Creating Club...',
+    });
+    await loading.present()
+    const isCreated = await this.clubService.createClub(this.newClub, this.newClubLogo)
+    await loading.dismiss()
+    if(isCreated){
+      this.router.navigateByUrl("/tabs/home", {replaceUrl : true});
+      const toast = await this.toastController.create({
+        message: 'Club created successfully !',
+        duration: 1500,
+        icon: 'checkmark-circle'
+      });
+      await toast.present();
+    }else{
+      const toast = await this.toastController.create({
+        message: 'Error : Creation failed, Please try again !',
+        duration: 1500,
+        icon: 'globe'
+      });
+      await toast.present();
+    }
   }
 
   invalidTouchedDirtyFormControl(formControlName : string){

@@ -10,11 +10,22 @@
 <ion-content class="ion-padding">
   <div class="wrapper">
     <div class="container ion-margin">
-      <div class="outer"style="background-image: url(../../assets/images/default.svg);">
+      <div *ngIf="newClubLogoDataUrl"
+      class="outer"
+      style="background-image: url('{{newClubLogoDataUrl}}');"
+      >
           <div class="inner"(click)="insertClubLogo()">
-             <ion-icon name="camera" class="camera-icon"></ion-icon>
-          </div>
-       </div>
+            <ion-icon name="camera" class="camera-icon"></ion-icon>
+        </div>
+      </div>
+      <div *ngIf="!newClubLogoDataUrl"
+      class="outer"
+      style="background-image: url(../../assets/images/default.svg);"
+      >
+        <div class="inner"(click)="insertClubLogo()">
+            <ion-icon name="camera" class="camera-icon"></ion-icon>
+        </div>
+      </div>
     </div>
     <form [formGroup]="createClubForm">
       <ion-card class="form-wrapper">
@@ -47,29 +58,32 @@
             </ion-note>
           </ion-item>
           <ion-item>
-            <ion-list class="ion-margin-bottom">
-              <ion-item>
-                <ion-icon name="star" slot="start"></ion-icon>
-                <ion-select interface="popover" placeholder="Select category">
-                  <ion-select-option value="Sports">Sports</ion-select-option>
-                  <ion-select-option value="Cultural">Cultural</ion-select-option>
-                  <ion-select-option value="Social">Social</ion-select-option>
-                  <ion-select-option value="Volunteer">Volunteer</ion-select-option>
-                  <ion-select-option value="Leisure">Leisure</ion-select-option>
-                  <ion-select-option value="Professional">Professional</ion-select-option>
-                </ion-select>
-                <!-- <ion-note slot="error" *ngIf="true">
-                  Description field is required
-                </ion-note> -->
-              </ion-item>
-            </ion-list>
+            <ion-icon name="star" slot="start"></ion-icon>
+            <ion-select
+              formControlName="category"
+              interface="popover"
+              placeholder="Select category">
+              <ion-select-option value="Sports">Sports</ion-select-option>
+              <ion-select-option value="Cultural">Cultural</ion-select-option>
+              <ion-select-option value="Social">Social</ion-select-option>
+              <ion-select-option value="Volunteer">Volunteer</ion-select-option>
+              <ion-select-option value="Leisure">Leisure</ion-select-option>
+              <ion-select-option value="Professional">Professional</ion-select-option>
+            </ion-select>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('category')
+              && category.errors?.['required']">
+              Description field is required
+            </ion-note>
           </ion-item>
           <ion-toolbar>
-            <ion-button color="tertiary" slot="start">
+            <ion-button color="tertiary" slot="start" (click)="createClubForm.reset()">
               Reset
               <ion-icon slot="end" name="refresh-circle"></ion-icon>
             </ion-button>
-            <ion-button color="success" slot="end" [disabled]="createClubForm.invalid">
+            <ion-button color="success" slot="end"
+            [disabled]="createClubForm.invalid || !newClubLogoDataUrl"
+            (click)="createClub()">
               Create
               <ion-icon slot="end" name="add-circle"></ion-icon>
             </ion-button>

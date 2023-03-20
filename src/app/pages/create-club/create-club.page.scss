@@ -10,6 +10,14 @@
   height: 100%;
 }
 
+ion-content{
+  --ion-background-color: rgb(231, 231, 231);
+}
+
+ion-card{
+  --ion-background-color: white;
+}
+
 .center-logo{
   display: flex;
   flex-direction: column;

@@ -22,22 +22,37 @@ export class RegisterPage implements OnInit {
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
-      name : ['',[
+      fullname : ['',[
         Validators.required
       ]],
-      description : ['',[
+      email : ['',[
         Validators.required,
+        Validators.email
       ]],
-      category : ['',[
+      phone : ['',[
         Validators.required,
+        Validators.pattern('[- +()0-9]+')
       ]],
+      password : ['',[
+        Validators.required,
+        // At least 8 characters in length Lowercase letters Uppercase letters Numbers Special characters.
+        Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}')
+      ]],
+      repeatPassword : ['',[
+        Validators.required
+      ]]
     })
   }
 
   registerForm !: FormGroup
-  newUser !: User
-  passwordFieldType = 'password';
-  passwordIcon = 'eye';
+  newUser : User = {
+    fullname : '',
+    email : '',
+    phone : '',
+    password : ''
+  };
+  passwordFieldType = 'password'
+  passwordIcon = 'eye'
 
   get fullname(){
     return this.registerForm.controls['fullname'];
@@ -56,12 +71,11 @@ export class RegisterPage implements OnInit {
   }
 
   async register(){
-    this.newUser = new User(
-      this.fullname.value,
-      this.email.value,
-      this.phone.value,
-      this.password.value
-    )
+    this.newUser.fullname = this.fullname.value;
+    this.newUser.email = this.email.value;
+    this.newUser.phone = this.phone.value;
+    this.newUser.password = this.password.value;
+
     const loading = await this.loadingController.create({
       message: 'Creating account...',
     });
