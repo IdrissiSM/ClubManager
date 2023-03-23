@@ -16,7 +16,7 @@ export class AuthService {
 
   async register(user : User){
     try {
-      const newUser = await createUserWithEmailAndPassword(this.auth, user.email, user.password)
+      await createUserWithEmailAndPassword(this.auth, user.email, user.password)
       .then((userCredential) => {
         const uid = userCredential.user.uid;
         const collectionInstance = collection(this.firestore,'users');
@@ -44,7 +44,7 @@ export class AuthService {
       const loginUser = await signInWithEmailAndPassword(this.auth, email, password)
       const usersCollectionInstance = collection(this.firestore, 'users')
       const q = query(usersCollectionInstance, where('uid', '==', loginUser.user.uid))
-      getDocs(q).then((querySnapshot) => {
+      await getDocs(q).then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           const currentUser : any = {
             uid : loginUser.user.uid,
@@ -57,27 +57,13 @@ export class AuthService {
           localStorage.setItem('currentUser', JSON.stringify(currentUser));
         });
       });
-      // const currentUser : any = {
-      //   id : loginUser.user.uid,
-      //   email : loginUser.user.email,
-      //   email: 'john@example.com',
-      // };
-      // id ?: string;
-      // fullname : string;
-      // birthday ?: Date;
-      // email : string;
-      // phone : string;
-      // photoUrl ?: string;
-      // password : string;
-      // localStorage.setItem('user', JSON.stringify(user));
-
       return loginUser;
     } catch (error) {
       return null;
     }
   }
 
-  logout(){
-    return signOut(this.auth);
+  async logout(){
+    return await signOut(this.auth);
   }
 }

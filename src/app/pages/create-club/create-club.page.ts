@@ -5,7 +5,6 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Club } from 'src/app/models/Club'
-import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-create-club',
@@ -16,7 +15,6 @@ export class CreateClubPage implements OnInit {
 
   createClubForm !: FormGroup
   newClub : Club = {
-    code : "",
     name : "",
     description : "",
     category : "",
@@ -102,10 +100,7 @@ export class CreateClubPage implements OnInit {
 
 
   async createClub(){
-    let clubUid = uuidv4();
     let defaultLogoUrl = "../../assets/images/default.svg"
-
-    this.newClub.code = clubUid;
     this.newClub.name = this.name.value;
     this.newClub.description = this.description.value;
     this.newClub.category = this.category.value;
@@ -118,7 +113,7 @@ export class CreateClubPage implements OnInit {
     const isCreated = await this.clubService.createClub(this.newClub, this.newClubLogo)
     await loading.dismiss()
     if(isCreated){
-      this.router.navigateByUrl("/tabs/home", {replaceUrl : true});
+      await this.router.navigateByUrl("/home", {replaceUrl : true});
       const toast = await this.toastController.create({
         message: 'Club created successfully !',
         duration: 1500,

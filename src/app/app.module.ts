@@ -16,6 +16,7 @@ import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,7 +29,8 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
     AngularFireModule,
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    ClipboardModule,
   ],
   providers: [{
     provide: RouteReuseStrategy,

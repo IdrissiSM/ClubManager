@@ -8,12 +8,15 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 
+import { ClipboardModule } from '@angular/cdk/clipboard';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    HomePageRoutingModule
+    HomePageRoutingModule,
+    ClipboardModule
   ],
   declarations: [HomePage]
 })

@@ -1,6 +1,6 @@
 export interface Club {
   id ?: string;
-  code : string;
+  // code : string;
   name : string;
   description : string;
   category : string;

@@ -28,6 +28,11 @@ export class TasksPage implements OnInit {
     this.loaded = true;
   }
 
+  backToHome(){
+    localStorage.removeItem('currentClub');
+    this.router.navigateByUrl("/home",{replaceUrl : true})
+  }
+
   async logout(){
     await this.authService.logout()
     this.router.navigateByUrl("/welcome",{replaceUrl : true})

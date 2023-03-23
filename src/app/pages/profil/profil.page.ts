@@ -1,8 +1,11 @@
+import { UserService } from './../../services/user.service';
+import { User } from 'src/app/models/User';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, LoadingController, ToastController } from '@ionic/angular';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-profil',
@@ -12,19 +15,90 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 export class ProfilPage implements OnInit {
 
   loading : boolean = true;
+  editForm !: FormGroup
+  currentUser !: any
+  userInfo !: User
 
   constructor(
     private router : Router,
     private authService : AuthService,
-    private actionSheetCtrl: ActionSheetController
+    private actionSheetCtrl: ActionSheetController,
+    private formBuilder : FormBuilder,
+    private loadingController : LoadingController,
+    private userService : UserService,
+    private toastController : ToastController
   ) { }
 
   ngOnInit() {
+    // current user information :
+    const currentUser = localStorage.getItem("currentUser")
+    this.currentUser = currentUser ? JSON.parse(currentUser) : null;
+
+    // edit form :
+    this.editForm = this.formBuilder.group({
+      fullname : [this.currentUser.fullname,[
+        Validators.required
+      ]],
+      email : [this.currentUser.email,[
+        Validators.required,
+        Validators.email
+      ]],
+      phone : [this.currentUser.phone,[
+        Validators.required,
+        Validators.pattern('[- +()0-9]+')
+      ]],
+    })
+  }
+
+  get fullname(){
+    return this.editForm.controls['fullname'];
+  }
+  get email(){
+    return this.editForm.controls['email'];
+  }
+  get phone(){
+    return this.editForm.controls['phone'];
+  }
+
+  backToHome(){
+    this.router.navigateByUrl("/home",{replaceUrl : true})
   }
 
   async logout(){
     await this.authService.logout()
     this.router.navigateByUrl("/welcome",{replaceUrl : true})
+  }
+
+  async saveUserInfo(){
+    let defaultLogoUrl = "../../assets/images/profile.svg"
+    this.userInfo.fullname = this.fullname.value;
+    this.userInfo.email = this.email.value;
+    this.userInfo.phone = this.phone.value;
+    this.userInfo.photoUrl = defaultLogoUrl;
+    console.log(this.userInfo)
+
+    const loading = await this.loadingController.create({
+      message: 'updating...',
+    });
+    await loading.present()
+    const isCreated = await this.userService.saveUserInfo(this.currentUser.uid,this.newProfilLogo,this.userInfo)
+    await loading.dismiss()
+    if(isCreated){
+      await this.router.navigateByUrl("/home", {replaceUrl : true});
+      const toast = await this.toastController.create({
+        message: 'profil information successfully !',
+        duration: 1500,
+        icon: 'checkmark-circle'
+      });
+      await toast.present();
+    }else{
+      const toast = await this.toastController.create({
+        message: 'Error : update failed, Please try again !',
+        duration: 1500,
+        icon: 'globe'
+      });
+      await toast.present();
+    }
   }
 
   getAllUsers(){
@@ -90,6 +164,12 @@ export class ProfilPage implements OnInit {
       ]
     });
     await sheet.present();
+  }
+
+  invalidTouchedDirtyFormControl(formControlName : string){
+    return this.editForm.controls[formControlName]?.invalid &&
+      (this.editForm.controls[formControlName]?.touched
+        || this.editForm.controls[formControlName]?.dirty);
   }
 
 }

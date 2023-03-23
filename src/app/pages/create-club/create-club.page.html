@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons slot="start" routerLink="/tabs/home">
+    <ion-buttons slot="start" routerLink="/home">
       <ion-back-button default-href=""></ion-back-button>
     </ion-buttons>
     <ion-title>Create Club</ion-title>
@@ -63,12 +63,12 @@
               formControlName="category"
               interface="popover"
               placeholder="Select category">
+              <ion-select-option value="Computer Science">Computer Science</ion-select-option>
               <ion-select-option value="Sports">Sports</ion-select-option>
               <ion-select-option value="Cultural">Cultural</ion-select-option>
               <ion-select-option value="Social">Social</ion-select-option>
               <ion-select-option value="Volunteer">Volunteer</ion-select-option>
               <ion-select-option value="Leisure">Leisure</ion-select-option>
-              <ion-select-option value="Professional">Professional</ion-select-option>
             </ion-select>
             <ion-note slot="error" *ngIf="
               invalidTouchedDirtyFormControl('category')

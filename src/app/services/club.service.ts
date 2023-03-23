@@ -1,11 +1,10 @@
-import { AuthService } from './auth.service';
 import { Member } from './../models/Member';
-import { Auth } from '@angular/fire/auth';
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, deleteDoc, doc, where, query, getDocs, getDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, deleteDoc, doc, where, query, getDocs, getDoc, getCountFromServer, orderBy, updateDoc } from '@angular/fire/firestore';
 import { Club } from '../models/Club';
 import { Storage, getDownloadURL, ref, uploadBytes, deleteObject  } from '@angular/fire/storage';
 import { Cell } from '../models/Cell';
+import { ToastController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +13,10 @@ export class ClubService {
 
   constructor(
     private firestore: Firestore,
-    private auth: Auth,
-    private authService : AuthService,
-    private storage : Storage
-  ){
-  }
+    private storage : Storage,
+    private toastController : ToastController,
+  ){}
+
   NewClubAdmin_member : Member = {
     idUser : "",
     idCell : "",
@@ -40,7 +38,6 @@ export class ClubService {
       // create new club :
       const ClubsCollectionInstance = collection(this.firestore,'clubs');
       await addDoc(ClubsCollectionInstance,{
-        code : newClub.code,
         name : newClub.name,
         description : newClub.description,
         category : newClub.category,
@@ -51,7 +48,7 @@ export class ClubService {
       })
       // add steering cell :
       await this.addNewCell(this.NewClubSteeringCell).then((docRef) => {
-        this.NewClubSteeringCell.id = docRef.id;
+        this.NewClubSteeringCell.id = docRef?.id;
         // console.log('docRef.id "cell" ',docRef.id)
       })
       // add current user as member with role admin :
@@ -73,9 +70,9 @@ export class ClubService {
     deleteDoc(collectionInstance)
   }
 
-  deleteCell(id : any){
+  async deleteCell(id : string){
     const collectionInstance = doc(this.firestore,'cells',id);
-    deleteDoc(collectionInstance)
+    await deleteDoc(collectionInstance)
   }
 
   async getUserClubs(){
@@ -86,11 +83,66 @@ export class ClubService {
     await getDocs(q).then((querySnapshot) => {
       querySnapshot.forEach(async (doc) => {
         const clubId = doc.data()["idClub"]
-        const club = await this.getClubById(clubId)
+        let club = await this.getClubById(clubId)
+        club = {
+          ...club,
+          ...{'id' : clubId},
+          ...{'memberId' : doc.id},
+          ...{'role' : doc.data()["role"]}
+        }
         userClubs.push(club)
       })
     })
     return userClubs
+  }
+
+  async joinClubByCode(code : string){
+    // check if club exists
+    const clubRef = doc(this.firestore, 'clubs', code)
+    const clubSnap = await getDoc(clubRef)
+    if(clubSnap.exists()){
+      // the club exists
+      // check if user is already a member of the club :
+      const memberCollectionInstance = collection(this.firestore, 'members')
+      const q = query(
+        memberCollectionInstance,
+        where('idUser', '==', this.getCurrentUserUID()),
+        where('idClub', '==', code)
+      )
+      return await getDocs(q).then(async (querySnapshot) => {
+        if(querySnapshot.size > 0){
+          // the user is already a member of the club
+          const toast = await this.toastController.create({
+            message: 'You are already a member of this club',
+            duration: 1500,
+            icon: 'alert-circle'
+          });
+          await toast.present();
+          return false
+        }else{
+          // the user is not a member of the club
+          // add current user as member with role "no-role" :
+          const member : Member = {
+            idUser: this.getCurrentUserUID(),
+            idClub: code,
+            idCell: '',
+            role: 'no-role',
+            stars: 0
+          }
+          await this.addNewMember(member)
+          return true
+        }
+      })
+    } else {
+      // club does not exist
+      const toast = await this.toastController.create({
+        message: 'Incorrect code',
+        duration: 1500,
+        icon: 'alert-circle'
+      });
+      await toast.present();
+      return false
+    }
   }
 
   async getClubById(id : any){
@@ -104,31 +156,97 @@ export class ClubService {
     }
   }
 
+  async leaveClub(id : string){
+    try {
+      // get member by idClub and idUser :
+      const memberCollectionInstance = collection(this.firestore, 'members')
+      const q = query(
+        memberCollectionInstance,
+        where('idUser', '==', this.getCurrentUserUID()),
+        where('idClub', '==', id)
+      )
+      await getDocs(q).then((querySnapshot) => {
+        querySnapshot.forEach(async (doc) => {
+          await deleteDoc(doc.ref)
+        })
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   getCurrentUserUID(){
     const userInfoString = localStorage.getItem("currentUser");
     const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
     return userInfo.uid
   }
 
-  addNewCell(cell : Cell){
+  async addNewCell(cell : Cell){
     const collectionInstance = collection(this.firestore,'cells')
+    const cellCollectionInstance = collection(this.firestore, 'cells')
+    const q = query(cellCollectionInstance, where("name", "==", cell.name))
+    const snapshot = await getCountFromServer(q)
+    if(snapshot.data().count == 0){
       return addDoc(collectionInstance,{
         name : cell.name,
         description : cell.description,
         idClub : cell.idClub,
       })
+    }
+    else{
+      return null
+    }
   }
-  addNewMember(member : Member){
-    const collectionInstance = collection(this.firestore,'members')
-      addDoc(collectionInstance,{
-        idUser : member.idUser,
-        idClub : member.idClub,
-        idCell : member.idCell,
-        role : member.role,
-        stars : member.stars,
-      }).then( member => {
-        console.log(member);
+
+  async getClubMembersInCells(idClub : string){
+    let cellsWithMembersList : any = []
+    const cellCollectionInstance = collection(this.firestore, 'cells')
+    const q = query(
+      cellCollectionInstance,
+      where("idClub", "==", idClub),
+    )
+    await getDocs(q).then((memberQuerySnapshot) => {
+      memberQuerySnapshot.forEach(async (cellDoc) => {
+        const users = await this.getMembersByCellName(idClub,cellDoc.data()["name"])
+        const cell : Cell = {
+          id: cellDoc.id,
+          idClub: cellDoc.data()["idClub"],
+          name: cellDoc.data()["name"],
+          description: cellDoc.data()["description"]
+        }
+        const cellWithMembersList = {"cell" : cell, "users" : users }
+        cellsWithMembersList.push(cellWithMembersList)
       })
+    })
+    return cellsWithMembersList
+  }
+
+  async getMembersWithoutCell(idClub : string){
+    let membersWithoutCell : any = []
+    const cellCollectionInstance = collection(this.firestore, 'members')
+    const q = query(
+      cellCollectionInstance,
+      where("idClub", "==", idClub),
+      where("role", "==", "no-role")
+    )
+    await getDocs(q).then((memberQuerySnapshot) => {
+      memberQuerySnapshot.forEach(async (memberDoc) => {
+        const user = await this.getUserByUID(memberDoc.data()["idUser"])
+        membersWithoutCell.push(user)
+      })
+    })
+    return membersWithoutCell
+  }
+
+  async addNewMember(member : Member){
+    const collectionInstance = collection(this.firestore,'members')
+    await addDoc(collectionInstance,{
+      idUser : member.idUser,
+      idClub : member.idClub,
+      idCell : member.idCell,
+      role : member.role,
+      stars : member.stars,
+    })
   }
 
   dataURLLtoBlob(dataurl : any){
@@ -145,14 +263,13 @@ export class ClubService {
       const currentDate = Date.now()
       const filePath = `Club_Logos/${currentDate}.${imageData.format}`
       const fileRef = ref(this.storage, filePath)
-      const task = await uploadBytes(fileRef, blob)
-      // const url = getDownloadURL(fileRef)
-      // return url;
+      await uploadBytes(fileRef, blob)
       return fileRef
     }catch(e){
       throw(e);
     }
   }
+
   async deleteImage(filePath : any) {
     try {
       const fileRef = ref(this.storage, filePath)
@@ -162,4 +279,197 @@ export class ClubService {
       throw(e)
     }
   }
+
+  async getCountClubMembers(idClub : string){
+    const memberCollectionInstance = collection(this.firestore, 'members')
+    const q = query(memberCollectionInstance, where("idClub", "==", idClub))
+    const snapshot = await getCountFromServer(q)
+    return snapshot.data().count
+  }
+
+  async getSteeringCellMembers(idClub : string){
+    const clubUsers : any[] = []
+    const memberCollectionInstance = collection(this.firestore, 'members')
+    const q = query(
+      memberCollectionInstance,
+      where("idClub", "==", idClub)
+    )
+    await getDocs(q).then((memberQuerySnapshot) => {
+      memberQuerySnapshot.forEach(async (memberDoc) => {
+        const idCell = memberDoc.data()["idCell"]
+        // console.log('memberDoc.data()',memberDoc.data())
+        const cellCollectionInstance = collection(this.firestore, 'cells')
+        const q = query(
+          cellCollectionInstance,
+          where("idClub", "==", idClub),
+          where("name", "==", "Steering")
+        )
+        await getDocs(q).then( (cellQuerySnapqhot) => {
+          cellQuerySnapqhot.forEach(async (cellDoc) => {
+            if(cellDoc.id == idCell){
+              const uid = await memberDoc.data()["idUser"]
+              const user = await this.getUserByUID(uid)
+              clubUsers.push(user)
+            }
+          })
+        })
+      })
+    })
+    return clubUsers
+  }
+
+  async getMembersByCellName(idClub : string,cellName : string){
+    let cellMembers : any[] = []
+    const memberCollectionInstance = collection(this.firestore, 'members')
+    const q = query(
+      memberCollectionInstance,
+      where("idClub", "==", idClub)
+    )
+    await getDocs(q).then((memberQuerySnapshot) => {
+      memberQuerySnapshot.forEach(async (memberDoc) => {
+        const idCell = memberDoc.data()["idCell"]
+        const cellCollectionInstance = collection(this.firestore, 'cells')
+        const q = query(
+          cellCollectionInstance,
+          where("idClub", "==", idClub),
+          where("name", "==", cellName)
+        )
+        await getDocs(q).then( (cellQuerySnapqhot) => {
+          cellQuerySnapqhot.forEach(async (cellDoc) => {
+            if(cellDoc.id == idCell){
+              const uid = await memberDoc.data()["idUser"]
+              const user = await this.getUserByUID(uid)
+              const member = await this.getMemberByClubIdAndUserId(uid,idClub)
+              cellMembers.push({...user,...{"role" : member.role}})
+            }
+          })
+        })
+      })
+    })
+    return cellMembers
+  }
+
+  async getUserByUID(uid : string){
+    let user : any
+    const userCollectionInstance = collection(this.firestore, 'users')
+    const q = query(
+      userCollectionInstance,
+      where("uid", "==", uid)
+    )
+    await getDocs(q).then((querySnapqhot) => {
+      querySnapqhot.forEach((userDoc) => {
+        user = userDoc.data()
+      })
+    })
+    return user
+  }
+
+  async getCellById(idCell : string){
+    try {
+      const docRef = doc(this.firestore, 'cells', idCell)
+      const docSnap = await getDoc(docRef)
+      console.log(docSnap.data())
+      return docSnap.data()
+    } catch (error) {
+      return null
+    }
+  }
+
+  async getUserById(idUser : string){
+    try {
+      const docRef = doc(this.firestore, 'users', idUser)
+      const docSnap = await getDoc(docRef)
+      return docSnap.data()
+    } catch (error) {
+      return null
+    }
+  }
+
+  async getCountClubCells(idClub : string){
+    const cellCollectionInstance = collection(this.firestore, 'cells')
+    const q = query(cellCollectionInstance, where("idClub", "==", idClub))
+    const snapshot = await getCountFromServer(q)
+    return snapshot.data().count
+  }
+
+  async getClubCells(idClub : string){
+    let clubCells : any[] = []
+    const collectionInstance = collection(this.firestore, 'cells')
+    const q = query(collectionInstance, where('idClub', '==', idClub))
+    await getDocs(q).then((querySnapshot) => {
+      querySnapshot.forEach(async (doc) => {
+        const cell : Cell = {
+          id : doc.id,
+          idClub: doc.data()["idClub"],
+          name: doc.data()["name"],
+          description: doc.data()["description"]
+        }
+        clubCells.push(cell)
+      })
+    })
+    return clubCells
+  }
+
+  async addMemberToCell(idUser : string, idCell : string, idClub : string){
+    const cellCollectionInstance = collection(this.firestore, 'members')
+    const q = query(
+      cellCollectionInstance,
+      where("idUser", "==", idUser),
+      where("idClub", "==", idClub),
+    )
+    const docRef = await getDocs(q);
+    const doc = docRef.docs[0];
+    const data = {
+      idCell : idCell,
+      role : "member",
+    };
+    await updateDoc(doc.ref, data);
+  }
+
+  async removeMemberFromCell(idUser : string, idClub : string){
+    const cellCollectionInstance = collection(this.firestore, 'members')
+    const q = query(
+      cellCollectionInstance,
+      where("idUser", "==", idUser),
+      where("idClub", "==", idClub),
+    )
+    const docRef = await getDocs(q);
+    const doc = docRef.docs[0];
+    const data = {
+      idCell : "",
+      role : "no-role",
+    };
+    await updateDoc(doc.ref, data);
+  }
+
+  async excludeMember(idUser : string, idClub : string){
+    const cellCollectionInstance = collection(this.firestore, 'members')
+    const q = query(
+      cellCollectionInstance,
+      where("idUser", "==", idUser),
+      where("idClub", "==", idClub),
+    )
+    const docRef = await getDocs(q)
+    const doc = docRef.docs[0]
+    await deleteDoc(doc.ref)
+  }
+
+  async getMemberByClubIdAndUserId(idUser : string, idClub : string){
+    const cellCollectionInstance = collection(this.firestore, 'members')
+    const q = query(
+      cellCollectionInstance,
+      where("idUser", "==", idUser),
+      where("idClub", "==", idClub),
+    )
+    const docRef = await getDocs(q)
+    const doc = docRef.docs[0]
+    const member : Member = {
+      id: doc.id,
+      idUser: doc.data()["idUser"],
+      idClub: doc.data()["idClub"],
+      role: doc.data()["role"]
+    }
+    return member
+  }
+
 }

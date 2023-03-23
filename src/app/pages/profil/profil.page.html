@@ -1,6 +1,11 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-searchbar id="searchbar"></ion-searchbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="backToHome()" >
+        <ion-icon slot="icon-only" name="home"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Profil</ion-title>
     <ion-buttons slot="end">
       <ion-button>
         <ion-icon slot="icon-only" name="log-out" size="large" class="white"></ion-icon>
@@ -10,11 +15,6 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <!-- <div class="profile-header">
-    <img src="../../assets/images/profile.svg" alt="profile picture" class="profile-picture">
-    <h2 class="profile-name">John Doe</h2>
-    <p class="profile-description">Lorem ipsum dolor sit amet.</p>
-  </div> -->
   <div class="container ion-margin">
     <div *ngIf="newProfilLogoDataUrl"
       class="outer"
@@ -34,13 +34,22 @@
       </div>
   </div>
   <div>
-    <form>
+    <form [formGroup]="editForm">
       <ion-toolbar>
         <ion-item>
           <ion-label position="stacked">Fullname</ion-label>
           <div class="flex">
-            <p *ngIf="!editFullname">Firstname & Lastname</p>
-            <ion-input *ngIf="editFullname" value="Firstname & Lastname"></ion-input>
+            <p *ngIf="!editFullname">{{currentUser.fullname}}</p>
+            <ion-input
+            *ngIf="editFullname"
+            style="margin:7px 0px"
+            formControlName="fullname"
+            ></ion-input>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('fullname')
+              && fullname.errors?.['required']">
+              Fullname field is required
+            </ion-note>
           </div>
         </ion-item>
         <ion-buttons slot="secondary">
@@ -55,8 +64,21 @@
         <ion-item>
           <ion-label position="stacked">Email</ion-label>
           <div class="flex">
-            <p *ngIf="!editEmail">name@gmail.com</p>
-            <ion-input *ngIf="editEmail" value="name@gmail.com"></ion-input>
+            <p *ngIf="!editEmail">{{currentUser.email}}</p>
+            <ion-input
+            *ngIf="editEmail"
+            formControlName="email"
+            ></ion-input>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('email')
+              && email.errors?.['required']">
+              email field is required
+            </ion-note>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('email')
+              && email.errors?.['pattern']">
+              Enter a valid email
+            </ion-note>
           </div>
         </ion-item>
         <ion-buttons slot="secondary">
@@ -71,8 +93,21 @@
         <ion-item>
           <ion-label position="stacked">Phone number</ion-label>
           <div class="flex">
-            <p *ngIf="!editPhone">0612345678</p>
-            <ion-input *ngIf="editPhone" value="0612345678"></ion-input>
+            <p *ngIf="!editPhone">{{currentUser.phone}}</p>
+            <ion-input
+            *ngIf="editPhone"
+            formControlName="phone"
+            ></ion-input>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('phone')
+              && phone.errors?.['required']">
+              phone field is required
+            </ion-note>
+            <ion-note slot="error" *ngIf="
+              invalidTouchedDirtyFormControl('phone')
+              && phone.errors?.['pattern']">
+              Enter a valid phone number
+            </ion-note>
           </div>
         </ion-item>
         <ion-buttons slot="secondary">
@@ -83,7 +118,7 @@
         <ion-title>Icon Buttons</ion-title>
       </ion-toolbar>
       <ion-item lines="none">
-        <ion-button color="success">Save</ion-button>
+        <ion-button [disabled]="editForm.invalid" (click)="saveUserInfo()" color="success">Save</ion-button>
         <ion-button color="danger">Log Out</ion-button>
       </ion-item>
     </form>

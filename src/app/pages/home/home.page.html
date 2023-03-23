@@ -1,9 +1,14 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-searchbar id="searchbar"></ion-searchbar>
+    <ion-buttons slot="start">
+      <ion-button routerLink="/profil" >
+        <ion-icon slot="icon-only" name="person" size="large" class="white"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-searchbar (keyup)="searchClub()" [(ngModel)]="searchClubText" placeholder="Search..." id="searchbar"></ion-searchbar>
     <ion-buttons slot="end">
-      <ion-button>
-        <ion-icon slot="icon-only" name="log-out" size="large" class="white" (click)="logout()"></ion-icon>
+      <ion-button (click)="logout()">
+        <ion-icon slot="icon-only" name="log-out" size="large" class="white"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -11,32 +16,33 @@
 
 <ion-content [fullscreen]="true">
   <ion-list>
-    <ion-item lines="none" *ngFor="let club of Clubs">
+    <ion-item lines="none" *ngFor="let club of searchClubs, let i=index">
       <ion-card class="club-card">
         <div style="display: flex;">
-          <ion-avatar class="ion-margin">
+          <ion-avatar class="ion-margin" (click)="clubDetails(club)">
             <img [src]="club.logoUrl"/>
           </ion-avatar>
-          <ion-card-header>
+          <ion-card-header (click)="clubDetails(club)">
             <ion-card-title>{{club.name}}</ion-card-title>
-            <ion-card-subtitle>{{club.category}}</ion-card-subtitle>
+            <ion-card-subtitle>category : {{club.category}}</ion-card-subtitle>
+            <ion-card-subtitle *ngIf="club.role!=='no-role'">{{club.role}}</ion-card-subtitle>
           </ion-card-header>
         </div>
-        <ion-button fill="clear" id="click-trigger-1">
+        <ion-button fill="clear" id="click-trigger-{{i}}">
           <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
         </ion-button>
-        <ion-popover trigger="click-trigger-1" triggerAction="click">
+        <ion-popover trigger="click-trigger-{{i}}" triggerAction="click">
           <ng-template>
             <ion-content>
-              <ion-item routerLink="/tabs/tasks" >
-                <ion-icon name="menu" slot="start"></ion-icon>
-                Détails
-              </ion-item>
-              <ion-item>
+              <ion-item *ngIf="club.role === 'admin'" (click)="copyClubCode(club.id,club.name)">
                 <ion-icon name="copy" slot="start"></ion-icon>
                 Copy code
               </ion-item>
-              <ion-item color="danger">
+              <ion-item *ngIf="club.role === 'admin'" color="danger">
+                <ion-icon name="trash" slot="start"></ion-icon>
+                Delete
+              </ion-item>
+              <ion-item *ngIf="club.role !== 'admin'" (click)="leaveClub(club.name,club.id)" color="danger">
                 <ion-icon name="log-out" slot="start"></ion-icon>
                 Leave
               </ion-item>

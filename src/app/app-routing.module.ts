@@ -27,14 +27,6 @@ const routes: Routes = [
     path: 'tabs',
     loadChildren: () => import('./pages/tabs/tabs.module').then( m => m.TabsPageModule)
   },
-  // {
-  //   path: 'profil',
-  //   loadChildren: () => import('./pages/profil/profil.module').then( m => m.ProfilPageModule)
-  // },
-  // {
-  //   path: 'tasks',
-  //   loadChildren: () => import('./pages/tasks/tasks.module').then( m => m.TasksPageModule)
-  // },
   {
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
@@ -47,12 +39,17 @@ const routes: Routes = [
     path: 'create-club',
     loadChildren: () => import('./pages/create-club/create-club.module').then( m => m.CreateClubPageModule)
   },
-
-
-
-  // {
-  //   path: '**', redirectTo: 'welcome'
-  // },
+  {
+    path: 'profil',
+    loadChildren: () => import('./pages/profil/profil.module').then( m => m.ProfilPageModule)
+  },
+  {
+    path: 'home',
+    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
+  },
+  {
+    path: '**', redirectTo: 'welcome'
+  },
 ];
 
 @NgModule({

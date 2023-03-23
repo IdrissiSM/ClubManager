@@ -1,14 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <!-- <ion-icon slot="icon-only" name="close-circle"></ion-icon> -->
-      <!-- <ion-icon slot="icon-only" name="checkmark-circle"></ion-icon> -->
-      <!-- <ion-icon slot="icon-only" name="hourglass"></ion-icon> -->
-      <ion-select [interfaceOptions]="customActionSheetOptions" interface="action-sheet">
-        <ion-select-option value="pending">Pending</ion-select-option>
-        <ion-select-option value="in_progress">In progress</ion-select-option>
-        <ion-select-option value="completed">Completed</ion-select-option>
-      </ion-select>
+      <ion-button (click)="backToHome()" >
+        <ion-icon slot="icon-only" name="home"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-searchbar id="searchbar" placeholder="Search" ></ion-searchbar>
     <ion-buttons slot="end">
