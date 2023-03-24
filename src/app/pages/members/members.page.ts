@@ -1,7 +1,7 @@
 import { ClubService } from './../../services/club.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, ToastController, PopoverController } from '@ionic/angular';
+import { AlertController, ToastController, PopoverController, LoadingController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { Cell } from 'src/app/models/Cell';
 
@@ -18,7 +18,8 @@ export class MembersPage implements OnInit {
     private alertController: AlertController,
     private clubService : ClubService,
     private toastController : ToastController,
-    private popoverController : PopoverController
+    private popoverController : PopoverController,
+    private loadingController: LoadingController
     )
   { }
 
@@ -41,11 +42,28 @@ export class MembersPage implements OnInit {
     this.router.navigateByUrl("/home",{replaceUrl : true})
   }
 
-  initializeClub(){
+  adminControl(member : any, currentMember : any){
+    if(currentMember.role==='admin'){
+      if(member.role==='admin'){
+        return false
+      }else{
+        return true
+      }
+    }else{
+      return false
+    }
+  }
+
+  async initializeClub(){
+    const loading = await this.loadingController.create({
+      message: 'loading...',
+    });
+    await loading.present();
     this.getCountClubMembers()
     this.getCountClubCells()
-    this.getClubMembersInCells()
-    this.getMembersWithoutCell()
+    await this.getClubMembersInCells()
+    await this.getMembersWithoutCell()
+    await loading.dismiss()
   }
 
   countClubMembers !: number
@@ -77,7 +95,6 @@ export class MembersPage implements OnInit {
     await this.clubService.getClubMembersInCells(this.clubDetails.id)
     .then( list => {
       this.cellsWithUsersList = list
-      console.log(list)
     })
   }
 
@@ -199,7 +216,6 @@ export class MembersPage implements OnInit {
       ],
       inputs: inputs,
     });
-
     await alert.present();
   }
 
@@ -226,6 +242,67 @@ export class MembersPage implements OnInit {
   async deleteCell(idCell : string){
     await this.clubService.deleteCell(idCell)
     this.initializeClub()
+  }
+
+  async defineRole(idMember : string, fullname : string, cellName : string){
+    let inputs : any[]
+    if(cellName === "Steering"){
+      inputs = [
+        {
+          label: 'general secretary',
+          name : 'role',
+          type: 'radio',
+          value: 'cell leader',
+        },
+        {
+          label: 'treasurer',
+          name : 'role',
+          type: 'radio',
+          value: 'treasurer',
+        },
+        {
+          label: 'vice admin',
+          name : 'role',
+          type: 'radio',
+          value: 'vice admin',
+        }
+      ]
+    }else{
+      inputs = [
+        {
+          label: 'cell leader',
+          name : 'role',
+          type: 'radio',
+          value: 'cell leader',
+        },
+        {
+          label: 'member',
+          name : 'role',
+          type: 'radio',
+          value: '',
+        }
+      ]
+    }
+    await this.popoverController.dismiss()
+    const alert = await this.alertController.create({
+      header: `Select new role for ${fullname}`,
+      inputs: inputs,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Change',
+          handler: async (newRole) => {
+            await this.clubService.defineRole(idMember,newRole).then( () => {
+              this.initializeClub()
+            })
+          }
+        },
+      ],
+    });
+    await alert.present();
   }
 
   logout(){

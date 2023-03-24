@@ -38,7 +38,7 @@
                 <ion-icon name="copy" slot="start"></ion-icon>
                 Copy code
               </ion-item>
-              <ion-item *ngIf="club.role === 'admin'" color="danger">
+              <ion-item *ngIf="club.role === 'admin'" (click)="deleteClub(club.id,club.name)" color="danger">
                 <ion-icon name="trash" slot="start"></ion-icon>
                 Delete
               </ion-item>

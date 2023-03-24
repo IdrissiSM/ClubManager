@@ -54,12 +54,18 @@
         <ion-label>
           {{member.fullname}} <span *ngIf="member.role==='admin'" >(admin)</span>
         </ion-label>
-        <ion-button *ngIf="member.role !== 'admin' && currentMember.role==='admin'" fill="clear" id="click-trigger-{{cellIndex}}{{memberIndex}}">
+        <!-- <ion-button *ngIf="member.role !== 'admin' && currentMember.role==='admin'" fill="clear" id="click-trigger-{{cellIndex}}{{memberIndex}}"> -->
+        <ion-button *ngIf="adminControl(member,currentMember)" fill="clear" id="click-trigger-{{cellIndex}}{{memberIndex}}">
           <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
         </ion-button>
-        <ion-popover *ngIf="member.role !== 'admin' && currentMember.role==='admin'"  trigger="click-trigger-{{cellIndex}}{{memberIndex}}" triggerAction="click">
+        <!-- <ion-popover *ngIf="member.role !== 'admin' && currentMember.role==='admin'"  trigger="click-trigger-{{cellIndex}}{{memberIndex}}" triggerAction="click"> -->
+        <ion-popover *ngIf="adminControl(member,currentMember)"  trigger="click-trigger-{{cellIndex}}{{memberIndex}}" triggerAction="click">
           <ng-template>
             <ion-content>
+              <ion-item (click)="defineRole(member.uid,member.fullname,cell.cell.name)">
+                <ion-icon name="add-circle" slot="start"></ion-icon>
+                define role
+              </ion-item>
               <ion-item (click)="addToCell(member.uid,'change')">
                 <ion-icon name="person-add" slot="start"></ion-icon>
                 change cell
@@ -83,17 +89,17 @@
       <h3>Members without cell</h3>
     </ion-item>
     <ion-list>
-      <ion-item *ngFor="let member of membersWithoutCell">
+      <ion-item *ngFor="let member of membersWithoutCell, let index=index">
         <ion-avatar slot="start">
           <img src="../../assets/images/profile.svg" alt=""/>
         </ion-avatar>
         <ion-label>
           {{member.fullname}}
         </ion-label>
-        <ion-button fill="clear" id="click-trigger-6">
+        <ion-button *ngIf="currentMember.role==='admin'" fill="clear" id="click-trigger-{{index}}">
           <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
         </ion-button>
-        <ion-popover trigger="click-trigger-6" triggerAction="click">
+        <ion-popover *ngIf="currentMember.role==='admin'" trigger="click-trigger-{{index}}" triggerAction="click">
           <ng-template>
             <ion-content>
               <ion-item (click)="addToCell(member.uid,'add')">

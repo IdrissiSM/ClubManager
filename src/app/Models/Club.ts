@@ -5,4 +5,5 @@ export interface Club {
   description : string;
   category : string;
   logoUrl ?: string;
+  logoPath ?: string;
 }

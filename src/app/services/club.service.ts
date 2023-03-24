@@ -2,7 +2,7 @@ import { Member } from './../models/Member';
 import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, deleteDoc, doc, where, query, getDocs, getDoc, getCountFromServer, orderBy, updateDoc } from '@angular/fire/firestore';
 import { Club } from '../models/Club';
-import { Storage, getDownloadURL, ref, uploadBytes, deleteObject  } from '@angular/fire/storage';
+import { Storage, getDownloadURL, ref, uploadBytes, deleteObject, StorageReference  } from '@angular/fire/storage';
 import { Cell } from '../models/Cell';
 import { ToastController } from '@ionic/angular';
 
@@ -33,7 +33,8 @@ export class ClubService {
     try{
       // upload logo image to firebase storage :
       const blob = this.dataURLLtoBlob(image.dataUrl)
-      const fileRef = await this.uplaodImage(blob, image)
+      const {fileRef,filePath} = (await this.uplaodImage(blob, image))
+      // const filePath = (await this.uplaodImage(blob, image)).filePath
       const url = await getDownloadURL(fileRef)
       // create new club :
       const ClubsCollectionInstance = collection(this.firestore,'clubs');
@@ -41,15 +42,14 @@ export class ClubService {
         name : newClub.name,
         description : newClub.description,
         category : newClub.category,
-        logoUrl : url
+        logoUrl : url,
+        logoPath : filePath,
       }).then((docRef) => {
         this.NewClubSteeringCell.idClub = newClub.id = docRef.id;
-        // console.log('docRef.id "club" ',docRef.id)
       })
       // add steering cell :
       await this.addNewCell(this.NewClubSteeringCell).then((docRef) => {
         this.NewClubSteeringCell.id = docRef?.id;
-        // console.log('docRef.id "cell" ',docRef.id)
       })
       // add current user as member with role admin :
       this.NewClubAdmin_member.idUser = this.getCurrentUserUID()
@@ -63,11 +63,6 @@ export class ClubService {
     catch(error){
       return true;
     }
-  }
-
-  deleteClub(id : any){
-    const collectionInstance = doc(this.firestore,'clubs',id);
-    deleteDoc(collectionInstance)
   }
 
   async deleteCell(id : string){
@@ -182,12 +177,15 @@ export class ClubService {
   }
 
   async addNewCell(cell : Cell){
-    const collectionInstance = collection(this.firestore,'cells')
     const cellCollectionInstance = collection(this.firestore, 'cells')
-    const q = query(cellCollectionInstance, where("name", "==", cell.name))
+    const q = query(
+      cellCollectionInstance,
+      where("idClub", "==", cell.idClub),
+      where("name", "==", cell.name),
+      )
     const snapshot = await getCountFromServer(q)
     if(snapshot.data().count == 0){
-      return addDoc(collectionInstance,{
+      return addDoc(cellCollectionInstance,{
         name : cell.name,
         description : cell.description,
         idClub : cell.idClub,
@@ -264,19 +262,19 @@ export class ClubService {
       const filePath = `Club_Logos/${currentDate}.${imageData.format}`
       const fileRef = ref(this.storage, filePath)
       await uploadBytes(fileRef, blob)
-      return fileRef
+      return {'fileRef' : fileRef, 'filePath' : filePath}
     }catch(e){
       throw(e);
     }
   }
-
-  async deleteImage(filePath : any) {
-    try {
-      const fileRef = ref(this.storage, filePath)
+  async deleteClubLogo(idClub : string){
+    const docRef = doc(this.firestore, 'clubs', idClub)
+    const docSnap = await getDoc(docRef)
+    if(docSnap.exists()){
+      console.log(docSnap.data()["logoPath"])
+      const fileRef = ref(this.storage, docSnap.data()["logoPath"]);
+      console.log(fileRef)
       await deleteObject(fileRef)
-      console.log('Image deleted successfully')
-    } catch (e) {
-      throw(e)
     }
   }
 
@@ -470,6 +468,51 @@ export class ClubService {
       role: doc.data()["role"]
     }
     return member
+  }
+
+  async getMembersByClubId(idClub : string){
+    let clubMembers : any[] = []
+    const cellCollectionInstance = collection(this.firestore, 'members')
+    const q = query(
+      cellCollectionInstance,
+      where("idClub", "==", idClub),
+    )
+    await getDocs(q).then((querySnapshot) => {
+      querySnapshot.forEach(async (doc) => {
+        const member : Member = {
+          id: doc.id,
+          idUser: doc.data()["idUser"],
+          idClub: doc.data()["idClub"],
+          role: doc.data()["role"]
+        }
+        clubMembers.push(member)
+      })
+    })
+    return clubMembers
+  }
+
+  async deleteClub(id : string){
+    // delete members :
+    const clubMembers = await this.getMembersByClubId(id)
+    clubMembers.forEach(async (member) => {
+      const memberDoc = doc(this.firestore,'members',member.id)
+      await deleteDoc(memberDoc)
+    })
+    // delete club cells :
+    const clubCells = await this.getClubCells(id)
+    clubCells.forEach(async (cell) => {
+      const cellDoc = doc(this.firestore,'cells',cell.id)
+      await deleteDoc(cellDoc)
+    })
+    // delete club logo :
+    await this.deleteClubLogo(id)
+    // delete club :
+    const clubDoc = doc(this.firestore,'clubs',id)
+    await deleteDoc(clubDoc)
+  }
+
+  async defineRole(idMember : string,newRole : string){
+
   }
 
 }

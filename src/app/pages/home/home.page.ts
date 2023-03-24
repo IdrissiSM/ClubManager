@@ -178,4 +178,26 @@ export class HomePage implements OnInit {
     this.searchClubs = this.Clubs.filter((club: { name: string; }) => club.name.toLowerCase().includes(this.searchClubText.toLowerCase()))
   }
 
+  async deleteClub(id : string, name : string){
+    await this.popoverController.dismiss();
+    const alert = await this.alertController.create({
+      header: `Are you sure you want delete ${name} ?`,
+      buttons: [
+        {
+          text: 'Yes',
+          handler : async () => {
+            await this.clubService.deleteClub(id)
+            await this.alertController.dismiss();
+            await this.getUserClubs()
+          }
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        }
+      ],
+    });
+    await alert.present();
+  }
+
 }
