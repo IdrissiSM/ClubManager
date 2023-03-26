@@ -7,7 +7,7 @@
     </ion-buttons>
     <ion-title>Profil</ion-title>
     <ion-buttons slot="end">
-      <ion-button>
+      <ion-button (click)="logout()">
         <ion-icon slot="icon-only" name="log-out" size="large" class="white"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -19,20 +19,21 @@
     <div *ngIf="newProfilLogoDataUrl"
       class="outer"
       style="background-image: url('{{newProfilLogoDataUrl}}');"
-      >
-          <div class="inner"(click)="insertProfilLogo()">
-            <ion-icon name="camera" class="camera-icon"></ion-icon>
-        </div>
-      </div>
-      <div *ngIf="!newProfilLogoDataUrl"
-      class="outer"
-      style="background-image: url(../../assets/images/profile.svg);"
-      >
+    >
         <div class="inner"(click)="insertProfilLogo()">
-            <ion-icon name="camera" class="camera-icon"></ion-icon>
-        </div>
+          <ion-icon name="camera" class="camera-icon"></ion-icon>
       </div>
+    </div>
+    <div *ngIf="!newProfilLogoDataUrl"
+      class="outer"
+      style="background-image: url({{userPhotoUrl}});"
+    >
+      <div class="inner"(click)="insertProfilLogo()">
+          <ion-icon name="camera" class="camera-icon"></ion-icon>
+      </div>
+    </div>
   </div>
+
   <div>
     <form [formGroup]="editForm">
       <ion-toolbar>
@@ -119,7 +120,7 @@
       </ion-toolbar>
       <ion-item lines="none">
         <ion-button [disabled]="editForm.invalid" (click)="saveUserInfo()" color="success">Save</ion-button>
-        <ion-button color="danger">Log Out</ion-button>
+        <ion-button (click)="deleteUserPhoto()" color="danger" slot="end">Delete photo</ion-button>
       </ion-item>
     </form>
   </div>

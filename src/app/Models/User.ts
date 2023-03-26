@@ -4,6 +4,7 @@ export interface User {
   birthday ?: Date;
   email : string;
   phone : string;
-  photoUrl ?: string;
   password : string;
+  photoUrl ?: string;
+  photoPath ?: string;
 }

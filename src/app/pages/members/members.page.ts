@@ -177,14 +177,27 @@ export class MembersPage implements OnInit {
     })
   }
 
-
-  async excludeMember(idUser : string){
+  async excludeMember(idUser : string, fullname : string){
     await this.popoverController.dismiss()
-    await this.clubService.excludeMember(idUser,this.clubDetails.id).then( () => {
-      this.initializeClub()
-    })
+    const alert = await this.alertController.create({
+      header: `Are you sure you want to exclude ${fullname} ?`,
+      buttons: [
+        {
+          text: 'Yes',
+          handler : async () => {
+            await this.clubService.excludeMember(idUser,this.clubDetails.id).then( () => {
+              this.initializeClub()
+            })
+          }
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        }
+      ],
+    });
+    await alert.present();
   }
-
 
   async addToCell(idUser : string, changeOrAdd : string) {
     await this.getClubCells(this.clubDetails.id)
@@ -244,44 +257,56 @@ export class MembersPage implements OnInit {
     this.initializeClub()
   }
 
-  async defineRole(idMember : string, fullname : string, cellName : string){
+  async isRoleAlreadyExists(role : string){
+    return await this.clubService.isRoleAlreadyExists(role,this.clubDetails.id)
+  }
+
+  async defineRole(idUser : string, fullname : string, cellName : string){
     let inputs : any[]
     if(cellName === "Steering"){
-      inputs = [
-        {
+      inputs = []
+      if(!(await this.isRoleAlreadyExists('general secretary'))){
+        inputs.push({
           label: 'general secretary',
           name : 'role',
           type: 'radio',
-          value: 'cell leader',
-        },
-        {
+          value: 'general secretary'
+        })
+      }
+      if(!(await this.isRoleAlreadyExists('treasurer'))){
+        inputs.push({
           label: 'treasurer',
           name : 'role',
           type: 'radio',
-          value: 'treasurer',
-        },
-        {
+          value: 'treasurer'
+        })
+      }
+      if(!(await this.isRoleAlreadyExists('vice admin'))){
+        inputs.push({
           label: 'vice admin',
           name : 'role',
           type: 'radio',
-          value: 'vice admin',
-        }
-      ]
+          value: 'vice admin'
+        })
+      }
     }else{
       inputs = [
-        {
-          label: 'cell leader',
-          name : 'role',
-          type: 'radio',
-          value: 'cell leader',
-        },
         {
           label: 'member',
           name : 'role',
           type: 'radio',
-          value: '',
+          value: 'member'
         }
       ]
+      if(!(await this.isRoleAlreadyExists('cell leader'))){
+        console.log('cell leader')
+        inputs.push({
+          label: 'cell leader',
+          name : 'role',
+          type: 'radio',
+          value: 'cell leader'
+        })
+      }
     }
     await this.popoverController.dismiss()
     const alert = await this.alertController.create({
@@ -295,7 +320,7 @@ export class MembersPage implements OnInit {
         {
           text: 'Change',
           handler: async (newRole) => {
-            await this.clubService.defineRole(idMember,newRole).then( () => {
+            await this.clubService.defineRole(idUser,this.clubDetails.id,newRole).then( () => {
               this.initializeClub()
             })
           }
@@ -311,5 +336,4 @@ export class MembersPage implements OnInit {
     this.authService.logout()
     this.router.navigateByUrl("/welcome",{replaceUrl : true})
   }
-
 }

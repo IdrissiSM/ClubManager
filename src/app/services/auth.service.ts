@@ -25,6 +25,8 @@ export class AuthService {
           fullname : user.fullname,
           email : user.email,
           phone : user.phone,
+          photoUrl : "",
+          photoPath : "",
         })
       })
       return true;
@@ -53,6 +55,7 @@ export class AuthService {
             fullname : doc.data()["fullname"],
             birthday : doc.data()["birthday"],
             photoUrl : doc.data()["photoUrl"],
+            photoPath : doc.data()["photoPath"]
           };
           localStorage.setItem('currentUser', JSON.stringify(currentUser));
         });

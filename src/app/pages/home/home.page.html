@@ -1,9 +1,12 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-button routerLink="/profil" >
+      <!-- <ion-button routerLink="/profil" >
         <ion-icon slot="icon-only" name="person" size="large" class="white"></ion-icon>
-      </ion-button>
+      </ion-button> -->
+      <ion-avatar routerLink="/profil" style="width:40px;height:40px">
+        <img [src]="profilPhotoSrc" alt="" style="border: 1.5px solid #EEEEF2;"/>
+      </ion-avatar>
     </ion-buttons>
     <ion-searchbar (keyup)="searchClub()" [(ngModel)]="searchClubText" placeholder="Search..." id="searchbar"></ion-searchbar>
     <ion-buttons slot="end">

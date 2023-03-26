@@ -3,7 +3,7 @@ import { User } from 'src/app/models/User';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
-import { ActionSheetController, LoadingController, ToastController } from '@ionic/angular';
+import { ActionSheetController, LoadingController, ToastController, AlertController } from '@ionic/angular';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -17,7 +17,12 @@ export class ProfilPage implements OnInit {
   loading : boolean = true;
   editForm !: FormGroup
   currentUser !: any
-  userInfo !: User
+  userInfo : User = {
+    fullname: '',
+    email: '',
+    phone: '',
+    password: ''
+  }
 
   constructor(
     private router : Router,
@@ -26,13 +31,14 @@ export class ProfilPage implements OnInit {
     private formBuilder : FormBuilder,
     private loadingController : LoadingController,
     private userService : UserService,
-    private toastController : ToastController
+    private toastController : ToastController,
+    private alertController : AlertController
   ) { }
 
   ngOnInit() {
-    // current user information :
     const currentUser = localStorage.getItem("currentUser")
     this.currentUser = currentUser ? JSON.parse(currentUser) : null;
+    this.getUserPhotoUrl()
 
     // edit form :
     this.editForm = this.formBuilder.group({
@@ -64,18 +70,17 @@ export class ProfilPage implements OnInit {
     this.router.navigateByUrl("/home",{replaceUrl : true})
   }
 
-  async logout(){
-    await this.authService.logout()
-    this.router.navigateByUrl("/welcome",{replaceUrl : true})
+  userPhotoUrl !: string
+  getUserPhotoUrl(){
+    this.userPhotoUrl = this.currentUser.photoUrl === "" ? '../../assets/images/profile.svg' : this.currentUser.photoUrl
   }
 
   async saveUserInfo(){
     let defaultLogoUrl = "../../assets/images/profile.svg"
-    this.userInfo.fullname = this.fullname.value;
-    this.userInfo.email = this.email.value;
-    this.userInfo.phone = this.phone.value;
-    this.userInfo.photoUrl = defaultLogoUrl;
-    console.log(this.userInfo)
+    this.userInfo.fullname = this.fullname.value
+    this.userInfo.email = this.email.value
+    this.userInfo.phone = this.phone.value
+    this.userInfo.photoUrl = defaultLogoUrl
 
     const loading = await this.loadingController.create({
       message: 'updating...',
@@ -84,10 +89,10 @@ export class ProfilPage implements OnInit {
     const isCreated = await this.userService.saveUserInfo(this.currentUser.uid,this.newProfilLogo,this.userInfo)
     await loading.dismiss()
     if(isCreated){
-      await this.router.navigateByUrl("/home", {replaceUrl : true});
+      await this.router.navigateByUrl("/profil", {replaceUrl : true});
       const toast = await this.toastController.create({
-        message: 'profil information successfully !',
-        duration: 1500,
+        message: 'profil information updated successfully !',
+        duration: 2000,
         icon: 'checkmark-circle'
       });
       await toast.present();
@@ -99,12 +104,6 @@ export class ProfilPage implements OnInit {
       });
       await toast.present();
     }
-  }
-
-  getAllUsers(){
-    this.authService.getAllUsers().subscribe( (data) => {
-      console.log(data)
-    })
   }
 
   editFullname : boolean = false;
@@ -119,7 +118,6 @@ export class ProfilPage implements OnInit {
       this.editPhone = ! this.editPhone;
     }
   }
-
 
   newProfilLogo : any
   newProfilLogoDataUrl : any
@@ -166,10 +164,50 @@ export class ProfilPage implements OnInit {
     await sheet.present();
   }
 
+  async deleteUserPhoto(){
+    const alert = await this.alertController.create({
+      header: `Are you sure you want to delete your profil photo ?`,
+      buttons: [
+        {
+          text: 'Yes',
+          handler : async () => {
+            if(await this.userService.deleteUserPhoto(this.currentUser.uid)){
+              const toast = await this.toastController.create({
+                message: 'Profil photo deleted !',
+                duration: 2000,
+                icon: 'checkmark-circle'
+              });
+              await toast.present();
+              this.currentUser.photoUrl = ""
+              this.currentUser.photoPath = ""
+              console.log(this.currentUser)
+              localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
+              this.getUserPhotoUrl()
+            }
+          }
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        }
+      ],
+    });
+    await alert.present();
+
+  }
+
   invalidTouchedDirtyFormControl(formControlName : string){
     return this.editForm.controls[formControlName]?.invalid &&
       (this.editForm.controls[formControlName]?.touched
         || this.editForm.controls[formControlName]?.dirty);
   }
 
+
+  logout(){
+    localStorage.removeItem('currentMember');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('currentClub');
+    this.authService.logout()
+    this.router.navigateByUrl("/welcome",{replaceUrl : true})
+  }
 }

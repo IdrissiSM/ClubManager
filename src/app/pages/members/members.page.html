@@ -34,87 +34,116 @@
   </div>
   <!-- cells -->
   <div *ngFor="let cell of cellsWithUsersList,let cellIndex=index">
-    <ion-item>
-      <h3>{{cell.cell.name}}</h3>
-      <ion-buttons
-      *ngIf="cell.cell.name!=='Steering'
-      && cell.users.length===0
-      && currentMember.role==='admin'"
-      slot="end">
-        <ion-button (click)="alertDeleteCell(cell.cell.id,cell.cell.name)" slot="end" color="danger">
-          <ion-icon name="trash" slot="icon-only"></ion-icon>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{cell.cell.name}}</ion-card-title>
+        <ion-card-subtitle>{{cell.cell.description}}</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content style="--padding:0px">
+        <ion-list>
+          <ion-item *ngFor="let member of cell.users,let memberIndex=index" style="--padding-start: 0;">
+            <ion-avatar slot="start">
+              <img [src]='member.photoUrl === "" ? "../../assets/images/profile.svg" : member.photoUrl' alt=""/>
+            </ion-avatar>
+            <ion-label>
+              {{member.fullname}}
+            </ion-label>
+            <br>
+            <ion-card-subtitle>{{member.role}}</ion-card-subtitle>
+            <!-- <ion-button *ngIf="member.role !== 'admin' && currentMember.role==='admin'" fill="clear" id="click-trigger-{{cellIndex}}{{memberIndex}}"> -->
+            <ion-button *ngIf="adminControl(member,currentMember)" fill="clear" id="click-trigger-{{cellIndex}}{{memberIndex}}">
+              <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
+            </ion-button>
+            <!-- <ion-popover *ngIf="member.role !== 'admin' && currentMember.role==='admin'"  trigger="click-trigger-{{cellIndex}}{{memberIndex}}" triggerAction="click"> -->
+            <ion-popover *ngIf="adminControl(member,currentMember)"  trigger="click-trigger-{{cellIndex}}{{memberIndex}}" triggerAction="click">
+              <ng-template>
+                <ion-content>
+                  <ion-item (click)="defineRole(member.uid,member.fullname,cell.cell.name)">
+                    <ion-icon name="add-circle" slot="start"></ion-icon>
+                    define role
+                  </ion-item>
+                  <ion-item (click)="addToCell(member.uid,'change')">
+                    <ion-icon name="person-add" slot="start"></ion-icon>
+                    change cell
+                  </ion-item>
+                  <ion-item (click)="removeFromCell(member.uid)">
+                    <ion-icon name="person-remove" slot="start"></ion-icon>
+                    Remove
+                  </ion-item>
+                  <ion-item color="danger" (click)="excludeMember(member.uid,member.fullname)">
+                    <ion-icon name="trash" slot="start"></ion-icon>
+                    exclude
+                  </ion-item>
+                </ion-content>
+              </ng-template>
+            </ion-popover>
+            <ion-item
+              *ngIf="cell.cell.name!=='Steering'
+              && cell.users.length===0
+              && currentMember.role==='admin'"
+            >
+              <ion-label>
+                There is no members yet !
+              </ion-label>
+            </ion-item>
+          </ion-item>
+        </ion-list>
+        <ion-button
+          *ngIf="cell.cell.name!=='Steering'
+          && cell.users.length===0
+          && currentMember.role==='admin'"
+          color="danger"
+          slot="end"
+          size="small"
+          (click)="alertDeleteCell(cell.cell.id,cell.cell.name)"
+        >
+          delete
+          <ion-icon name="trash" slot="end"></ion-icon>
         </ion-button>
-      </ion-buttons>
-    </ion-item>
-    <ion-list>
-      <ion-item *ngFor="let member of cell.users,let memberIndex=index">
-        <ion-avatar slot="start">
-          <img src="../../assets/images/profile.svg" alt=""/>
-        </ion-avatar>
-        <ion-label>
-          {{member.fullname}} <span *ngIf="member.role==='admin'" >(admin)</span>
-        </ion-label>
-        <!-- <ion-button *ngIf="member.role !== 'admin' && currentMember.role==='admin'" fill="clear" id="click-trigger-{{cellIndex}}{{memberIndex}}"> -->
-        <ion-button *ngIf="adminControl(member,currentMember)" fill="clear" id="click-trigger-{{cellIndex}}{{memberIndex}}">
-          <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
-        </ion-button>
-        <!-- <ion-popover *ngIf="member.role !== 'admin' && currentMember.role==='admin'"  trigger="click-trigger-{{cellIndex}}{{memberIndex}}" triggerAction="click"> -->
-        <ion-popover *ngIf="adminControl(member,currentMember)"  trigger="click-trigger-{{cellIndex}}{{memberIndex}}" triggerAction="click">
-          <ng-template>
-            <ion-content>
-              <ion-item (click)="defineRole(member.uid,member.fullname,cell.cell.name)">
-                <ion-icon name="add-circle" slot="start"></ion-icon>
-                define role
-              </ion-item>
-              <ion-item (click)="addToCell(member.uid,'change')">
-                <ion-icon name="person-add" slot="start"></ion-icon>
-                change cell
-              </ion-item>
-              <ion-item (click)="removeFromCell(member.uid)">
-                <ion-icon name="person-remove" slot="start"></ion-icon>
-                Remove
-              </ion-item>
-              <ion-item color="danger" (click)="excludeMember(member.uid)">
-                <ion-icon name="trash" slot="start"></ion-icon>
-                exclude
-              </ion-item>
-            </ion-content>
-          </ng-template>
-        </ion-popover>
-      </ion-item>
-    </ion-list>
+      </ion-card-content>
+    </ion-card>
   </div>
+  <!--  -->
+  <!-- <div *ngIf="membersWithoutCell.length !== 0"> -->
   <div>
-    <ion-item>
-      <h3>Members without cell</h3>
-    </ion-item>
-    <ion-list>
-      <ion-item *ngFor="let member of membersWithoutCell, let index=index">
-        <ion-avatar slot="start">
-          <img src="../../assets/images/profile.svg" alt=""/>
-        </ion-avatar>
-        <ion-label>
-          {{member.fullname}}
-        </ion-label>
-        <ion-button *ngIf="currentMember.role==='admin'" fill="clear" id="click-trigger-{{index}}">
-          <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
-        </ion-button>
-        <ion-popover *ngIf="currentMember.role==='admin'" trigger="click-trigger-{{index}}" triggerAction="click">
-          <ng-template>
-            <ion-content>
-              <ion-item (click)="addToCell(member.uid,'add')">
-                <ion-icon name="person-add" slot="start"></ion-icon>
-                add to cell
-              </ion-item>
-              <ion-item color="danger">
-                <ion-icon name="trash" slot="start"></ion-icon>
-                exclude
-              </ion-item>
-            </ion-content>
-          </ng-template>
-        </ion-popover>
-      </ion-item>
-    </ion-list>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Others</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let member of membersWithoutCell, let index=index" style="--padding-start: 0;">
+            <ion-avatar slot="start">
+              <img [src]='member.photoUrl === "" ? "../../assets/images/profile.svg" : member.photoUrl' alt=""/>
+            </ion-avatar>
+            <ion-label>
+              {{member.fullname}} <span *ngIf="member.role==='admin'" >(admin)</span>
+            </ion-label>
+            <br>
+            <ion-card-subtitle>{{member.role}}</ion-card-subtitle>
+            <!-- <ion-button *ngIf="member.role !== 'admin' && currentMember.role==='admin'" fill="clear" id="click-trigger-{{cellIndex}}{{memberIndex}}"> -->
+            <ion-button *ngIf="adminControl(member,currentMember)" fill="clear" id="click-trigger-{{index}}">
+              <ion-icon name="ellipsis-vertical-outline" color="dark"></ion-icon>
+            </ion-button>
+            <!-- <ion-popover *ngIf="member.role !== 'admin' && currentMember.role==='admin'"  trigger="click-trigger-{{cellIndex}}{{memberIndex}}" triggerAction="click"> -->
+            <ion-popover *ngIf="adminControl(member,currentMember)"  trigger="click-trigger-{{index}}" triggerAction="click">
+              <ng-template>
+                <ion-content>
+                  <ion-item (click)="addToCell(member.uid,'add')">
+                    <ion-icon name="person-add" slot="start"></ion-icon>
+                    add to cell
+                  </ion-item>
+                  <ion-item color="danger">
+                    <ion-icon name="trash" slot="start"></ion-icon>
+                    exclude
+                  </ion-item>
+                </ion-content>
+              </ng-template>
+            </ion-popover>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
   </div>
   <ion-fab *ngIf="currentMember.role==='admin'" slot="fixed" vertical="bottom" horizontal="end">
     <ion-fab-button (click)="createCell()" color="tertiary">

@@ -71,10 +71,10 @@ export class RegisterPage implements OnInit {
   }
 
   async register(){
-    this.newUser.fullname = this.fullname.value;
-    this.newUser.email = this.email.value;
-    this.newUser.phone = this.phone.value;
-    this.newUser.password = this.password.value;
+    this.newUser.fullname = this.fullname.value
+    this.newUser.email = this.email.value
+    this.newUser.phone = this.phone.value
+    this.newUser.password = this.password.value
 
     const loading = await this.loadingController.create({
       message: 'Creating account...',

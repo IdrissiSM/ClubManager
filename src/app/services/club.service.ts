@@ -34,7 +34,6 @@ export class ClubService {
       // upload logo image to firebase storage :
       const blob = this.dataURLLtoBlob(image.dataUrl)
       const {fileRef,filePath} = (await this.uplaodImage(blob, image))
-      // const filePath = (await this.uplaodImage(blob, image)).filePath
       const url = await getDownloadURL(fileRef)
       // create new club :
       const ClubsCollectionInstance = collection(this.firestore,'clubs');
@@ -271,9 +270,7 @@ export class ClubService {
     const docRef = doc(this.firestore, 'clubs', idClub)
     const docSnap = await getDoc(docRef)
     if(docSnap.exists()){
-      console.log(docSnap.data()["logoPath"])
       const fileRef = ref(this.storage, docSnap.data()["logoPath"]);
-      console.log(fileRef)
       await deleteObject(fileRef)
     }
   }
@@ -511,8 +508,42 @@ export class ClubService {
     await deleteDoc(clubDoc)
   }
 
-  async defineRole(idMember : string,newRole : string){
+  async defineRole(idUser : string,idClub : string,newRole : string){
+    const cellCollectionInstance = collection(this.firestore, 'members')
+    const q = query(
+      cellCollectionInstance,
+      where("idUser", "==", idUser),
+      where("idClub", "==", idClub)
+    )
+    const docRef = await getDocs(q);
+    const doc = docRef.docs[0];
+    const data = {
+      role : newRole,
+    };
+    await updateDoc(doc.ref, data);
+  }
 
+  async isRoleAlreadyExists(role : string,idClub : string){
+    const cellCollectionInstance = collection(this.firestore, 'members')
+    const q = query(
+      cellCollectionInstance,
+      where("idClub", "==", idClub),
+      where("role", "==", role)
+    )
+    return !(await getDocs(q)).empty
+  }
+
+  async getMemberRole(idClub : string,idUser : string){
+    const cellCollectionInstance = collection(this.firestore, 'members')
+    const q = query(
+      cellCollectionInstance,
+      where("idUser", "==", idUser),
+      where("idClub", "==", idClub)
+    )
+    const docRef = await getDocs(q);
+    const doc = docRef.docs[0];
+    console.log('doc.data()["role"]',doc.data()["role"])
+    return doc.data()["role"]
   }
 
 }

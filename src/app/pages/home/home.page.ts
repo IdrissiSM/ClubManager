@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ActionSheetController, AlertController, NavController, LoadingController, ToastController, PopoverController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -18,6 +19,7 @@ export class HomePage implements OnInit {
 
   constructor(
     private router : Router,
+    private route: ActivatedRoute,
     private authService : AuthService,
     private loadingController : LoadingController,
     private actionSheetCtrl: ActionSheetController,
@@ -31,11 +33,14 @@ export class HomePage implements OnInit {
   { }
 
   currentUser : any
-
+  profilPhotoSrc !: string
   ngOnInit() {
-    const currentUser = localStorage.getItem("currentUser")
-    this.currentUser = currentUser ? JSON.parse(currentUser) : null;
-    this.getUserClubs()
+    this.route.params.subscribe(params => {
+      const currentUser = localStorage.getItem("currentUser")
+      this.currentUser = currentUser ? JSON.parse(currentUser) : null;
+      this.profilPhotoSrc = this.currentUser.photoUrl === "" ? "../../assets/images/profile.svg" : this.currentUser.photoUrl
+      this.getUserClubs()
+    });
   }
 
   async createClub(){
@@ -135,6 +140,7 @@ export class HomePage implements OnInit {
   }
 
   logout(){
+    localStorage.removeItem('currentMember');
     localStorage.removeItem('currentUser');
     localStorage.removeItem('currentClub');
     this.authService.logout()
