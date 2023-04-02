@@ -48,8 +48,13 @@ const routes: Routes = [
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
   },
   {
+    path: 'create-task',
+    loadChildren: () => import('./pages/create-task/create-task.module').then( m => m.CreateTaskPageModule)
+  },
+  {
     path: '**', redirectTo: 'welcome'
   },
+  
 ];
 
 @NgModule({

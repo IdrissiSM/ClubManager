@@ -11,7 +11,6 @@
         <ion-icon slot="icon-only" name="log-out"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <!-- <ion-progress-bar color="warning" type="indeterminate"></ion-progress-bar> -->
   </ion-toolbar>
   <ion-toolbar>
     <ion-segment value="all" [(ngModel)]="taskListSegment">
@@ -28,15 +27,12 @@
 
 <ion-content [fullscreen]="true" slot="center">
   <ion-fab slot="fixed" horizontal="end">
-    <ion-fab-button color="primary">
+    <ion-fab-button color="primary" routerLink="/create-task">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
   <ion-buttons slot="start">
-    <!-- <ion-icon slot="icon-only" name="close-circle"></ion-icon> -->
-    <!-- <ion-icon slot="icon-only" name="checkmark-circle"></ion-icon> -->
-    <!-- <ion-icon slot="icon-only" name="hourglass"></ion-icon> -->
     <ion-select [interfaceOptions]="customActionSheetOptions" interface="action-sheet">
       <ion-select-option value="pending">Pending</ion-select-option>
       <ion-select-option value="in_progress">In progress</ion-select-option>
@@ -44,107 +40,86 @@
     </ion-select>
   </ion-buttons>
 
-  <ion-list>
-    <ion-list-header>
-      <ion-skeleton-text [animated]="true" style="width: 80px"></ion-skeleton-text>
-    </ion-list-header>
-    <ion-item>
-      <ion-thumbnail slot="start">
-        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-      </ion-thumbnail>
-      <ion-label>
-        <h3>
-          <ion-skeleton-text [animated]="true" style="width: 80%;"></ion-skeleton-text>
-        </h3>
-        <p>
-          <ion-skeleton-text [animated]="true" style="width: 60%;"></ion-skeleton-text>
-        </p>
-        <p>
-          <ion-skeleton-text [animated]="true" style="width: 30%;"></ion-skeleton-text>
-        </p>
-      </ion-label>
-    </ion-item>
+  <ion-list *ngIf="loaded">
+    <div *ngFor="let i of [1,2,3,4]">
+      <ion-item>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text [animated]="true" style="width: 45%;"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text [animated]="true" style="width: 90%;"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+    </div>
   </ion-list>
 
-  <ion-list>
-    <ion-item lines="none">
-      <ion-card color="success">
+  <!-- [color]="task.status === 'completed' ? 'success' : 'warning'" -->
+  <ion-list *ngIf="taskListSegment === 'My_tasks' && !loaded">
+    <ion-item lines="none" *ngFor="let task of tasks, let i=index">
+      <ion-card style="width: 100%;">
         <ion-card-header>
           <ion-row class="ion-justify-content-end ion-align-items-end">
-            <ion-icon (click)="this.statusModel = !this.statusModel;" name="ellipsis-vertical-outline"></ion-icon>
+            <ion-icon id="click-trigger-{{i}}" name="ellipsis-vertical-outline"></ion-icon>
+            <ion-popover trigger="click-trigger-{{i}}" triggerAction="click">
+              <ng-template>
+                <ion-content>
+                  <ion-item>
+                    <ion-icon name="toggle-outline" slot="start"></ion-icon>
+                    Change status
+                  </ion-item>
+                </ion-content>
+              </ng-template>
+            </ion-popover>
           </ion-row>
-          <ion-card-title>Task Title</ion-card-title>
-          <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+          <ion-row style="justify-content: space-between; align-items: center;">
+            <ion-card-title>{{ task.title }}</ion-card-title>
+            <ion-card-subtitle>{{ task.status }} </ion-card-subtitle>
+          </ion-row>
         </ion-card-header>
         <ion-card-content>
-          Here's a small text description for the card content. Nothing more, nothing less.
+          {{ task.description }}
         </ion-card-content>
-        <ion-buttons>
-          <ion-button class="card_button">Status</ion-button>
-        </ion-buttons>
-        <!-- <ion-row class="ion-justify-content-end ion-align-items-end">
-          <ion-button class="card_button">Status</ion-button>
-        </ion-row> -->
-      </ion-card>
-    </ion-item>
-    <ion-item lines="none">
-      <ion-card color="success">
-        <ion-card-header>
-          <ion-row class="ion-justify-content-end ion-align-items-end">
-            <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-          </ion-row>
-          <ion-card-title>Task Title</ion-card-title>
-          <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-          Here's a small text description for the card content. Nothing more, nothing less.
-        </ion-card-content>
-        <ion-row class="ion-justify-content-end ion-align-items-end">
-          <ion-button class="card_button">Status</ion-button>
-        </ion-row>
-      </ion-card>
-    </ion-item>
-    <ion-item lines="none">
-      <ion-card color="success">
-        <ion-card-header>
-          <ion-row class="ion-justify-content-end ion-align-items-end">
-            <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-          </ion-row>
-          <ion-card-title>Task Title</ion-card-title>
-          <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-          Here's a small text description for the card content. Nothing more, nothing less.
-        </ion-card-content>
-        <ion-row class="ion-justify-content-end ion-align-items-end">
-          <ion-button class="card_button">Status</ion-button>
-        </ion-row>
-      </ion-card>
-    </ion-item>
-    <ion-item lines="none">
-      <ion-card color="success">
-        <ion-card-header>
-          <ion-row class="ion-justify-content-end ion-align-items-end">
-            <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-          </ion-row>
-          <ion-card-title>Task Title</ion-card-title>
-          <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-          Here's a small text description for the card content. Nothing more, nothing less.
-        </ion-card-content>
-        <ion-row class="ion-justify-content-end ion-align-items-end">
-          <ion-button class="card_button">Status</ion-button>
+        <ion-row class="ion-justify-content-end ion-align-items-end" *ngIf="task.status === 'completed'">
+          <div class="ion-padding">
+            <ion-icon color="warning" *ngFor="let item of stars;let i = index" [name]="rating <= i? 'star-outline' :'star' " size="large" (click)="review(i)"></ion-icon>
+          </div>          
         </ion-row>
       </ion-card>
     </ion-item>
   </ion-list>
 
-  <ion-infinite-scroll>
+  <ion-list *ngIf="taskListSegment === 'Assigned_tasks' && !loaded">
+    <ion-item lines="none" *ngFor="let task of assignedTasks, let i=index">
+      <ion-card style="width: 100%;">
+        <ion-card-header>
+          <ion-row class="ion-justify-content-end ion-align-items-end">
+            <ion-icon id="trigger-{{i}}" name="ellipsis-vertical-outline"></ion-icon>
+            <ion-popover trigger="trigger-{{i}}" triggerAction="click">
+              <ng-template>
+                <ion-content>
+                  <ion-item color="danger">
+                    <ion-icon name="trash" slot="start"></ion-icon>
+                    Delete
+                  </ion-item>
+                </ion-content>
+              </ng-template>
+            </ion-popover>
+          </ion-row>
+          <ion-row style="justify-content: space-between; align-items: center;">
+            <ion-card-title>{{ task.title }}</ion-card-title>
+            <ion-card-subtitle>{{ task.status }}</ion-card-subtitle>
+          </ion-row>
+        </ion-card-header>
+        <ion-card-content>
+          {{ task.description }}
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+  </ion-list>
+  <!-- <ion-infinite-scroll>
     <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+  </ion-infinite-scroll> -->
 
-  <ion-tabs>
-    <ion-router-outlet></ion-router-outlet>
-  </ion-tabs>
 </ion-content>

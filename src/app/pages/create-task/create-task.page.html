@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start" routerLink="/home">
+      <ion-back-button default-href=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Create Task</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="wrapper">
+    <form [formGroup]="createTaskForm" (submit)="createTask()">
+      <ion-card class="form-wrapper">
+        <ion-card-content>
+          <ion-item>
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            <ion-input type="text" placeholder="Enter a title" formControlName="title"></ion-input>
+          </ion-item>
+          
+          <ion-item>
+            <ion-icon name="document-text-outline" slot="start"></ion-icon>
+            <ion-textarea placeholder="Enter a description" formControlName="description"></ion-textarea>
+          </ion-item>
+          
+          <ion-item>
+            <ion-icon name="person-add-outline" slot="start"></ion-icon>
+            <ion-select placeholder="Select a member" formControlName="member">
+                <ion-select-option *ngFor="let member of members" [value]="member.idUser">{{ member.fullname }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item id="open-modal">
+            <ion-icon name="calendar-outline" slot="start"></ion-icon>
+            <ion-datetime-button datetime="datetime" color="tertiary"></ion-datetime-button>
+
+            <ion-modal [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime id="datetime" color="tertiary" formControlName="deadline"></ion-datetime>
+              </ng-template>
+            </ion-modal>
+          </ion-item>
+
+          <ion-toolbar>
+            <ion-button color="tertiary" slot="start">
+              Reset
+              <ion-icon slot="end" name="refresh-circle"></ion-icon>
+            </ion-button>
+            <ion-button type="submit" color="success" slot="end">
+              Create
+              <ion-icon slot="end" name="add-circle"></ion-icon>
+            </ion-button>
+          </ion-toolbar>
+        </ion-card-content>
+      </ion-card>
+    </form>
+  </div>
+</ion-content>
+

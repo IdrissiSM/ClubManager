@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { TaskService } from 'src/app/services/task.service';
 
 @Component({
   selector: 'app-tasks',
@@ -10,22 +11,33 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class TasksPage implements OnInit {
 
+  tasks: any[] = []
+  assignedTasks: any[] = []
   taskListSegment = "My_tasks";
-  loaded !: boolean;
+  loaded : boolean = true;
   statusModel = false;
+  rating: number = 3;
+  stars: any[] = new Array(5);
+
+  constructor(
+    private router : Router,
+    private taskSrevice: TaskService,
+    private auth : Auth,
+    private authService : AuthService)
+  { }
+
+  review(i: number) {
+    this.rating = i + 1;
+  }
 
   customActionSheetOptions = {
     header: 'Filter tasks',
   };
 
-  constructor(
-    private router : Router,
-    private auth : Auth,
-    private authService : AuthService)
-  { }
-
-  ngOnInit() {
-    this.loaded = true;
+  async ngOnInit() {
+    this.tasks = await this.taskSrevice.getUserTasks();
+    this.assignedTasks = await this.taskSrevice.getUserAssignedTasks();
+    this.loaded = false;
   }
 
   backToHome(){
@@ -37,5 +49,4 @@ export class TasksPage implements OnInit {
     await this.authService.logout()
     this.router.navigateByUrl("/welcome",{replaceUrl : true})
   }
-
 }

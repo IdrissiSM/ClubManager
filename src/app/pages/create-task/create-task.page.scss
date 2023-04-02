@@ -1,0 +1,13 @@
+ion-content{
+    --ion-background-color: rgb(231, 231, 231);
+}
+
+ion-card{
+    --ion-background-color: white;
+}
+ion-item{
+    margin-bottom: 30px;
+}
+ion-datetime-button::part(native) {
+    background: #FFF;
+}

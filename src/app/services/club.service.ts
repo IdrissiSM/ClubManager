@@ -1,10 +1,10 @@
 import { Member } from './../models/Member';
 import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, deleteDoc, doc, where, query, getDocs, getDoc, getCountFromServer, orderBy, updateDoc } from '@angular/fire/firestore';
-import { Club } from '../models/Club';
 import { Storage, getDownloadURL, ref, uploadBytes, deleteObject, StorageReference  } from '@angular/fire/storage';
 import { Cell } from '../models/Cell';
 import { ToastController } from '@ionic/angular';
+import { Club } from '../models/Club';
 
 @Injectable({
   providedIn: 'root'

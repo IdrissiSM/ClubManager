@@ -17,6 +17,7 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -31,6 +32,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
     AngularFireModule,
     AngularFirestoreModule,
     ClipboardModule,
+    HttpClientModule
   ],
   providers: [{
     provide: RouteReuseStrategy,
