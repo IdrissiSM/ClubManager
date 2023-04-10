@@ -29,10 +29,20 @@ export class TaskService {
     }
   }
 
+  // async getUserTasks(){
+  //   const tasksRef = collection(this.firestore, 'tasks');
+  //   const querySnapshot = await getDocs(query(tasksRef, where('to', '==', this.getCurrentUserUID())));
+  //   const tasks = querySnapshot.docs.map(doc => doc.data())
+  //   return tasks;
+  // }
   async getUserTasks(){
     const tasksRef = collection(this.firestore, 'tasks');
     const querySnapshot = await getDocs(query(tasksRef, where('to', '==', this.getCurrentUserUID())));
-    const tasks = querySnapshot.docs.map(doc => doc.data())
+    const tasks = querySnapshot.docs.map(doc => {
+      const taskData = doc.data();
+      const taskId = doc.id;
+      return { id: taskId, ...taskData };
+    });
     return tasks;
   }
   async getUserAssignedTasks(){
@@ -48,4 +58,12 @@ export class TaskService {
     return userInfo.uid
   }
 
+  async updateTaskStatus(taskId: string, newStatus: string) {
+    const taskRef = doc(this.firestore, 'tasks', taskId);
+    await updateDoc(taskRef, { status: newStatus });
+  }
+  async updateTaskRating(taskId: string, newRating: number) {
+    const taskRef = doc(this.firestore, 'tasks', taskId);
+    await updateDoc(taskRef, { rating: newRating });
+  }
 }

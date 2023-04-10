@@ -55,17 +55,17 @@
     </div>
   </ion-list>
 
-  <!-- [color]="task.status === 'completed' ? 'success' : 'warning'" -->
+ 
   <ion-list *ngIf="taskListSegment === 'My_tasks' && !loaded">
     <ion-item lines="none" *ngFor="let task of tasks, let i=index">
-      <ion-card style="width: 100%;">
+      <ion-card  [color]="task.status === 'Completed' ? 'success' : task.status === 'In rogress' ? 'warning' : 'danger'" style="width: 100%;">
         <ion-card-header>
           <ion-row class="ion-justify-content-end ion-align-items-end">
             <ion-icon id="click-trigger-{{i}}" name="ellipsis-vertical-outline"></ion-icon>
             <ion-popover trigger="click-trigger-{{i}}" triggerAction="click">
               <ng-template>
                 <ion-content>
-                  <ion-item>
+                  <ion-item (click)="changeStatus(task.id, task.status)">
                     <ion-icon name="toggle-outline" slot="start"></ion-icon>
                     Change status
                   </ion-item>
@@ -81,9 +81,9 @@
         <ion-card-content>
           {{ task.description }}
         </ion-card-content>
-        <ion-row class="ion-justify-content-end ion-align-items-end" *ngIf="task.status === 'completed'">
+        <ion-row class="ion-justify-content-end ion-align-items-end" *ngIf="task.status === 'Completed'">
           <div class="ion-padding">
-            <ion-icon color="warning" *ngFor="let item of stars;let i = index" [name]="rating <= i? 'star-outline' :'star' " size="large" (click)="review(i)"></ion-icon>
+            <ion-icon color="warning" *ngFor="let item of stars;let i = index" [name]="task.rating <= i? 'star-outline' :'star' " size="large" (click)="review(task.id ,i)"></ion-icon>
           </div>          
         </ion-row>
       </ion-card>
@@ -92,7 +92,7 @@
 
   <ion-list *ngIf="taskListSegment === 'Assigned_tasks' && !loaded">
     <ion-item lines="none" *ngFor="let task of assignedTasks, let i=index">
-      <ion-card style="width: 100%;">
+      <ion-card [color]="task.status === 'Completed' ? 'success' : task.status === 'In progress' ? 'warning' : 'danger'" style="width: 100%;">
         <ion-card-header>
           <ion-row class="ion-justify-content-end ion-align-items-end">
             <ion-icon id="trigger-{{i}}" name="ellipsis-vertical-outline"></ion-icon>
