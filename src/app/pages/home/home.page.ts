@@ -39,6 +39,7 @@ export class HomePage implements OnInit {
       const currentUser = localStorage.getItem("currentUser")
       this.currentUser = currentUser ? JSON.parse(currentUser) : null;
       this.profilPhotoSrc = this.currentUser.photoUrl === "" ? "../../assets/images/profile.svg" : this.currentUser.photoUrl
+      // this.profilPhotoSrc = "../../assets/images/profile.svg" 
       this.getUserClubs()
     });
   }

@@ -3,6 +3,7 @@ import { Auth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { AlertController, PopoverController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
+import { MemberService } from 'src/app/services/member.service';
 import { TaskService } from 'src/app/services/task.service';
 
 @Component({
@@ -18,10 +19,12 @@ export class TasksPage implements OnInit {
   loaded : boolean = true;
   statusModel = false;
   stars: any[] = new Array(5);
+  userRole: string = "";
 
   constructor(
     private router : Router,
-    private taskSrevice: TaskService,
+    private taskService: TaskService,
+    private memberService: MemberService,
     private auth : Auth,
     private authService : AuthService,
     private alertController: AlertController,
@@ -29,8 +32,8 @@ export class TasksPage implements OnInit {
   { }
 
   async review(taskId: string, i: number) {
-    this.taskSrevice.updateTaskRating(taskId, i+1)
-    this.tasks = await this.taskSrevice.getUserTasks();
+    this.taskService.updateTaskRating(taskId, i+1)
+    this.tasks = await this.taskService.getUserTasks();
   }
 
   customActionSheetOptions = {
@@ -38,9 +41,11 @@ export class TasksPage implements OnInit {
   };
 
   async ngOnInit() {
-    this.tasks = await this.taskSrevice.getUserTasks();
-    this.assignedTasks = await this.taskSrevice.getUserAssignedTasks();
+    this.userRole = await this.taskService.getCurrentUserRole()
+    this.tasks = await this.taskService.getUserTasks();
+    this.assignedTasks = await this.taskService.getUserAssignedTasks();
     this.loaded = false;
+    console.log(this.memberService.getMembersByClubAndCell())
   }
   async changeStatus(taskId: any, taskStatus: any) {
     console.log(taskStatus)
@@ -77,8 +82,8 @@ export class TasksPage implements OnInit {
         {
           text: 'Save',
           handler: async (data) => {
-            this.taskSrevice.updateTaskStatus(taskId, data);
-            this.tasks = await this.taskSrevice.getUserTasks();
+            this.taskService.updateTaskStatus(taskId, data);
+            this.tasks = await this.taskService.getUserTasks();
             const popover = await this.popoverController.getTop();
             if (popover) {
               popover.dismiss();

@@ -29,12 +29,6 @@ export class TaskService {
     }
   }
 
-  // async getUserTasks(){
-  //   const tasksRef = collection(this.firestore, 'tasks');
-  //   const querySnapshot = await getDocs(query(tasksRef, where('to', '==', this.getCurrentUserUID())));
-  //   const tasks = querySnapshot.docs.map(doc => doc.data())
-  //   return tasks;
-  // }
   async getUserTasks(){
     const tasksRef = collection(this.firestore, 'tasks');
     const querySnapshot = await getDocs(query(tasksRef, where('to', '==', this.getCurrentUserUID())));
@@ -57,7 +51,14 @@ export class TaskService {
     const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
     return userInfo.uid
   }
-
+  async getCurrentUserRole(){
+    const uid = this.getCurrentUserUID();
+    const membersRef = collection(this.firestore, 'members');
+    const querySnapshot = await getDocs(query(membersRef, where('idUser', '==',uid)));
+    const userData = querySnapshot.docs[0].data()['role']
+    console.log(userData)
+    return userData;
+  }
   async updateTaskStatus(taskId: string, newStatus: string) {
     const taskRef = doc(this.firestore, 'tasks', taskId);
     await updateDoc(taskRef, { status: newStatus });

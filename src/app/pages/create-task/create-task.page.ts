@@ -16,18 +16,29 @@ import { ClubService } from 'src/app/services/club.service';
 export class CreateTaskPage implements OnInit {
 
   members: any[] = [];
-  // dateExample = new Date().toISOString();
+  userRole: string = "";
+  tomorrow: string;
+
   constructor(
     private taskService: TaskService,
     private memberService: MemberService,
     private clubService: ClubService,
     private loadingController: LoadingController,
     private router: Router,
-    private toastController: ToastController,
-  ) { }
+    private toastController: ToastController) { 
+    let today = new Date();
+    today.setDate(today.getDate() + 1);
+    this.tomorrow = today.toISOString().slice(0, 10);
+  }
 
   async ngOnInit() {
-    this.members = await this.memberService.getMembers();
+    this.userRole = await this.taskService.getCurrentUserRole()
+    if(this.userRole === "cell leader"){
+      this.members = await this.memberService.getMembersByClubAndCell();
+    }
+    else{
+      this.members = await this.memberService.getMembersWithoutUser();
+    }
   }
   createTaskForm = new FormGroup({
     title: new FormControl('', Validators.required),
@@ -42,7 +53,7 @@ export class CreateTaskPage implements OnInit {
       description: this.createTaskForm.get("description")?.value || "",
       from: this.clubService.getCurrentUserUID(),
       to: this.createTaskForm.get("member")?.value || "",
-      deadline: this.createTaskForm.get("deadline")?.value || "",
+      deadline: this.createTaskForm.get("deadline")?.value || this.tomorrow,
       status: "pending",
       rating: 0
     }

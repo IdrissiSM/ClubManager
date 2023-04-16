@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
-import { User } from 'src/app/models/User';
 
 @Component({
   selector: 'app-login',
@@ -48,10 +47,9 @@ export class LoginPage implements OnInit {
       message: 'Logging in...',
     });
     await loading.present();
-
     const user = await this.authService.login(this.email.value, this.password.value)
     await loading.dismiss()
-
+    console.log(user)
     if(user){
       this.router.navigateByUrl("/home", {replaceUrl : true});
     }else{

@@ -25,7 +25,10 @@
           <ion-item>
             <ion-icon name="person-add-outline" slot="start"></ion-icon>
             <ion-select placeholder="Select a member" formControlName="member">
-                <ion-select-option *ngFor="let member of members" [value]="member.idUser">{{ member.fullname }}</ion-select-option>
+              <ion-select-option *ngFor="let member of members" [value]="member.idUser">{{ member.fullname }}</ion-select-option>
+              <ng-container *ngIf="members.length === 0">
+                <ion-select-option disabled selected>No members found.</ion-select-option>
+              </ng-container>
             </ion-select>
           </ion-item>
 
