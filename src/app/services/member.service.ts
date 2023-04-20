@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { collection, doc, Firestore, getDoc, getDocs, query, where } from '@angular/fire/firestore';
-import { Member } from '../models/Member';
 import { TaskService } from './task.service';
 
 @Injectable({

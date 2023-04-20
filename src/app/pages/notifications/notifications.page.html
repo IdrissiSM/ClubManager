@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Notifications</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <p class="ion-text-center ion-padding" style="color: rgb(97, 93, 93)" *ngIf="notifications.length === 0">No notifications to display</p>
+  <ion-list>
+    <!-- <ion-item style="padding-top: 6px; padding-bottom: 6px;">
+      <ion-avatar slot="start">
+        <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+      </ion-avatar>
+      <div>
+        <ion-label style="white-space: pre-wrap;">
+          <h3 style="margin-bottom: 6px;"><strong>Meeting</strong> tomorrow at <strong>12:00 PM</strong> in the club room. The <strong>presence</strong> is mandatory.</h3>
+          <p>one hour ago</p>
+        </ion-label>
+      </div>
+    </ion-item> -->
+    <ion-item *ngFor="let notification of notifications" style="padding-top: 6px; padding-bottom: 6px;">
+      <ion-avatar slot="start">
+        <img alt="Silhouette of a person's head" src="{{ notification.photoUrl }}" />
+      </ion-avatar>
+      <div>
+        <ion-label style="white-space: pre-wrap;">
+          <h3 style="margin-bottom: 6px;"><strong>{{ notification.fullname }}</strong> has assigned you a <strong>task</strong> that must be completed by <strong>{{ notification.deadline | date:'dd MMMM' }}</strong>.</h3>
+          <p>{{ getElapsedTime(notification.date) }}</p>
+        </ion-label>
+      </div>
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -42,13 +42,14 @@ export class TasksPage implements OnInit {
 
   async ngOnInit() {
     this.userRole = await this.taskService.getCurrentUserRole()
+    if(this.userRole === 'admin'){
+      this.taskListSegment = 'Assigned_tasks'
+    }
     this.tasks = await this.taskService.getUserTasks();
     this.assignedTasks = await this.taskService.getUserAssignedTasks();
     this.loaded = false;
-    console.log(this.memberService.getMembersByClubAndCell())
   }
   async changeStatus(taskId: any, taskStatus: any) {
-    console.log(taskStatus)
     const alert = await this.alertController.create({
       header: 'Change Task Status',
       inputs: [

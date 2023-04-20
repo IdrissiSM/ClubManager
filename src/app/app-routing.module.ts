@@ -53,7 +53,11 @@ const routes: Routes = [
   },
   {
     path: '**', redirectTo: 'welcome'
+  },  {
+    path: 'notifications',
+    loadChildren: () => import('./pages/notifications/notifications.module').then( m => m.NotificationsPageModule)
   },
+
   
 ];
 

@@ -49,7 +49,6 @@ export class LoginPage implements OnInit {
     await loading.present();
     const user = await this.authService.login(this.email.value, this.password.value)
     await loading.dismiss()
-    console.log(user)
     if(user){
       this.router.navigateByUrl("/home", {replaceUrl : true});
     }else{

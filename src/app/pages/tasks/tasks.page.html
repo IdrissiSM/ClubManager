@@ -1,67 +1,85 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-button (click)="backToHome()" >
+      <ion-button (click)="backToHome()">
         <ion-icon slot="icon-only" name="home"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-searchbar id="searchbar" placeholder="Search" ></ion-searchbar>
+    <ion-searchbar id="searchbar" placeholder="Search"></ion-searchbar>
     <ion-buttons slot="end">
       <ion-button (click)="logout()">
         <ion-icon slot="icon-only" name="log-out"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar *ngIf="userRole === 'cell leader' || userRole === 'admin'">
+  <ion-toolbar *ngIf="userRole === 'cell leader'">
     <ion-segment value="all" [(ngModel)]="taskListSegment">
-      <ion-segment-button value="My_tasks" selected="true">
+      <ion-segment-button value="My_tasks">
         <ion-label>My tasks</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="Assigned_tasks">
+      <ion-segment-button value="Assigned_tasks" checked>
         <ion-label>Assigned tasks</ion-label>
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content [fullscreen]="true" slot="center">
-  <ion-fab slot="fixed" horizontal="end" *ngIf="userRole === 'cell leader' || userRole === 'admin'">
+  <ion-fab
+    slot="fixed"
+    horizontal="end"
+    *ngIf="userRole === 'cell leader' || userRole === 'admin'"
+  >
     <ion-fab-button color="primary" routerLink="/create-task">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
   <ion-buttons slot="start">
-    <ion-select [interfaceOptions]="customActionSheetOptions" interface="action-sheet">
+    <ion-select
+      [interfaceOptions]="customActionSheetOptions"
+      interface="action-sheet"
+    >
       <ion-select-option value="pending">Pending</ion-select-option>
       <ion-select-option value="in_progress">In progress</ion-select-option>
       <ion-select-option value="completed">Completed</ion-select-option>
     </ion-select>
   </ion-buttons>
-
+  <h2 *ngIf="userRole !== 'cell leader' && !loaded && tasks.length > 0 && assignedTasks.length > 0" class="ion-padding-horizontal">Tasks List</h2>
   <ion-list *ngIf="loaded">
     <div *ngFor="let i of [1,2,3,4]">
       <ion-item>
         <ion-label>
           <h3>
-            <ion-skeleton-text [animated]="true" style="width: 45%;"></ion-skeleton-text>
+            <ion-skeleton-text
+              [animated]="true"
+              style="width: 45%"
+            ></ion-skeleton-text>
           </h3>
           <p>
-            <ion-skeleton-text [animated]="true" style="width: 90%;"></ion-skeleton-text>
+            <ion-skeleton-text
+              [animated]="true"
+              style="width: 90%"
+            ></ion-skeleton-text>
           </p>
         </ion-label>
       </ion-item>
     </div>
   </ion-list>
-
- 
+  
   <ion-list *ngIf="taskListSegment === 'My_tasks' && !loaded">
+    <p class="ion-text-center ion-padding" style="color: rgb(97, 93, 93)" *ngIf="tasks.length === 0">Your task list is currently empty.</p>
     <ion-item lines="none" *ngFor="let task of tasks, let i=index">
-      <ion-card  [color]="task.status === 'Completed' ? 'success' : task.status === 'In rogress' ? 'warning' : 'danger'" style="width: 100%;">
+      <ion-card
+        [color]="task.status === 'Completed' ? 'success' : task.status === 'In progress' ? 'warning' : 'danger'"
+        style="width: 100%"
+      >
         <ion-card-header>
           <ion-row class="ion-justify-content-end ion-align-items-end">
-            <ion-icon id="click-trigger-{{i}}" name="ellipsis-vertical-outline"></ion-icon>
+            <ion-icon
+              id="click-trigger-{{i}}"
+              name="ellipsis-vertical-outline"
+            ></ion-icon>
             <ion-popover trigger="click-trigger-{{i}}" triggerAction="click">
               <ng-template>
                 <ion-content>
@@ -73,29 +91,43 @@
               </ng-template>
             </ion-popover>
           </ion-row>
-          <ion-row style="justify-content: space-between; align-items: center;">
+          <ion-row style="justify-content: space-between; align-items: center">
             <ion-card-title>{{ task.title }}</ion-card-title>
             <ion-card-subtitle>{{ task.status }} </ion-card-subtitle>
           </ion-row>
         </ion-card-header>
-        <ion-card-content>
-          {{ task.description }}
-        </ion-card-content>
-        <ion-row class="ion-justify-content-end ion-align-items-end" *ngIf="task.status === 'Completed'">
+        <ion-card-content> {{ task.description }} </ion-card-content>
+        <ion-row
+          class="ion-justify-content-end ion-align-items-end"
+          *ngIf="task.status === 'Completed'"
+        >
           <div class="ion-padding">
-            <ion-icon color="warning" *ngFor="let item of stars;let i = index" [name]="task.rating <= i? 'star-outline' :'star' " size="large" (click)="review(task.id ,i)"></ion-icon>
-          </div>          
+            <ion-icon
+              color="warning"
+              *ngFor="let item of stars;let i = index"
+              [name]="task.rating <= i? 'star-outline' :'star' "
+              size="large"
+              (click)="review(task.id ,i)"
+            ></ion-icon>
+          </div>
         </ion-row>
       </ion-card>
     </ion-item>
   </ion-list>
 
   <ion-list *ngIf="taskListSegment === 'Assigned_tasks' && !loaded">
+    <p class="ion-text-center ion-padding" style="color: rgb(97, 93, 93)" *ngIf="assignedTasks.length === 0">Your task list is currently empty.</p>
     <ion-item lines="none" *ngFor="let task of assignedTasks, let i=index">
-      <ion-card [color]="task.status === 'Completed' ? 'success' : task.status === 'In progress' ? 'warning' : 'danger'" style="width: 100%;">
+      <ion-card
+        [color]="task.status === 'Completed' ? 'success' : task.status === 'In progress' ? 'warning' : 'danger'"
+        style="width: 100%"
+      >
         <ion-card-header>
           <ion-row class="ion-justify-content-end ion-align-items-end">
-            <ion-icon id="trigger-{{i}}" name="ellipsis-vertical-outline"></ion-icon>
+            <ion-icon
+              id="trigger-{{i}}"
+              name="ellipsis-vertical-outline"
+            ></ion-icon>
             <ion-popover trigger="trigger-{{i}}" triggerAction="click">
               <ng-template>
                 <ion-content>
@@ -107,19 +139,16 @@
               </ng-template>
             </ion-popover>
           </ion-row>
-          <ion-row style="justify-content: space-between; align-items: center;">
+          <ion-row style="justify-content: space-between; align-items: center">
             <ion-card-title>{{ task.title }}</ion-card-title>
             <ion-card-subtitle>{{ task.status }}</ion-card-subtitle>
           </ion-row>
         </ion-card-header>
-        <ion-card-content>
-          {{ task.description }}
-        </ion-card-content>
+        <ion-card-content> {{ task.description }} </ion-card-content>
       </ion-card>
     </ion-item>
   </ion-list>
   <!-- <ion-infinite-scroll>
     <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
   </ion-infinite-scroll> -->
-
 </ion-content>

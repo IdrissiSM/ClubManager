@@ -32,6 +32,7 @@
       <p>Members</p>
     </div>
   </div>
+  
   <!-- cells -->
   <div *ngFor="let cell of cellsWithUsersList,let cellIndex=index">
     <ion-card>
@@ -103,9 +104,7 @@
       </ion-card-content>
     </ion-card>
   </div>
-  <!--  -->
-  <!-- <div *ngIf="membersWithoutCell.length !== 0"> -->
-  <div>
+  <div *ngIf="membersWithoutCell?.length !== 0">
     <ion-card>
       <ion-card-header>
         <ion-card-title>Others</ion-card-title>
@@ -145,9 +144,15 @@
       </ion-card-content>
     </ion-card>
   </div>
-  <ion-fab *ngIf="currentMember.role==='admin'" slot="fixed" vertical="bottom" horizontal="end">
+  <div class="ion-padding-horizontal" style="display: flex; justify-content: flex-end;">
+    <ion-button color="tertiary" size="small">
+      <ion-icon slot="start" name="add"></ion-icon>
+      Add cell
+    </ion-button>
+  </div>
+  <!-- <ion-fab *ngIf="currentMember.role==='admin'" slot="fixed" vertical="bottom" horizontal="end">
     <ion-fab-button (click)="createCell()" color="tertiary">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
-  </ion-fab>
+  </ion-fab> -->
 </ion-content>

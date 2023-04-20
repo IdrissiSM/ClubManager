@@ -62,10 +62,11 @@ export class CreateTaskPage implements OnInit {
       message: 'Creating Task...',
     });
     await loading.present()
-    const isCreated = await this.taskService.createTask(newTask)
+    const TCreated = await this.taskService.createTask(newTask)
+    const NCreated = await this.taskService.createTaskNotification(newTask.from, newTask.to, newTask.deadline)
     await loading.dismiss()
-    if(isCreated){
-      await this.router.navigateByUrl("/**", {replaceUrl : true});
+    if(TCreated && NCreated){
+      await this.router.navigateByUrl("/tabs/tasks", {replaceUrl : true});
       const toast = await this.toastController.create({
         message: 'Task created successfully !',
         duration: 1500,
