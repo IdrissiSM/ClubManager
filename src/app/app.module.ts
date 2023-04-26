@@ -18,6 +18,8 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { HttpClientModule } from '@angular/common/http';
+import { NgCalendarModule } from 'ionic2-calendar';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,7 +34,8 @@ import { HttpClientModule } from '@angular/common/http';
     AngularFireModule,
     AngularFirestoreModule,
     ClipboardModule,
-    HttpClientModule
+    HttpClientModule,
+    NgCalendarModule
   ],
   providers: [{
     provide: RouteReuseStrategy,

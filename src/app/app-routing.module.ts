@@ -52,10 +52,11 @@ const routes: Routes = [
     loadChildren: () => import('./pages/create-task/create-task.module').then( m => m.CreateTaskPageModule)
   },
   {
+    path: 'create-meeting',
+    loadChildren: () => import('./pages/create-meeting/create-meeting.module').then( m => m.CreateMeetingPageModule)
+  },
+  {
     path: '**', redirectTo: 'welcome'
-  },  {
-    path: 'notifications',
-    loadChildren: () => import('./pages/notifications/notifications.module').then( m => m.NotificationsPageModule)
   },
 
   

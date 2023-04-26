@@ -12,18 +12,21 @@
     <form [formGroup]="createTaskForm" (submit)="createTask()">
       <ion-card class="form-wrapper">
         <ion-card-content>
+          <ion-label>Title</ion-label>
           <ion-item>
-            <ion-icon name="create-outline" slot="start"></ion-icon>
+            <ion-icon name="create-outline" slot="end"></ion-icon>
             <ion-input type="text" placeholder="Enter a title" formControlName="title"></ion-input>
           </ion-item>
           
+          <ion-label>Description</ion-label>
           <ion-item>
-            <ion-icon name="document-text-outline" slot="start"></ion-icon>
+            <ion-icon name="document-text-outline" slot="end"></ion-icon>
             <ion-textarea placeholder="Enter a description" formControlName="description"></ion-textarea>
           </ion-item>
-          
+
+          <ion-label>Assign to</ion-label>
           <ion-item>
-            <ion-icon name="person-add-outline" slot="start"></ion-icon>
+            <ion-icon name="person-add-outline" slot="end"></ion-icon>
             <ion-select placeholder="Select a member" formControlName="member">
               <ion-select-option *ngFor="let member of members" [value]="member.idUser">{{ member.fullname }}</ion-select-option>
               <ng-container *ngIf="members.length === 0">
@@ -32,6 +35,7 @@
             </ion-select>
           </ion-item>
 
+          <ion-label>Deadline</ion-label>
           <ion-item id="open-modal">
             <ion-icon name="calendar-outline" slot="start"></ion-icon>
             <ion-datetime-button datetime="datetime" color="tertiary"></ion-datetime-button>
@@ -44,7 +48,7 @@
           </ion-item>
 
           <ion-toolbar>
-            <ion-button color="tertiary" slot="start">
+            <ion-button color="tertiary" slot="start" (click)="createTaskForm.reset()">
               Reset
               <ion-icon slot="end" name="refresh-circle"></ion-icon>
             </ion-button>

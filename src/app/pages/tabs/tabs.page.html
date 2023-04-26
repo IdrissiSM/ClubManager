@@ -9,6 +9,10 @@
       <ion-icon name="clipboard"></ion-icon>
       Tasks
     </ion-tab-button>
+    <ion-tab-button tab="meetings" *ngIf="userRole === 'admin'">
+      <ion-icon name="calendar"></ion-icon>
+      Meetings
+    </ion-tab-button>
     <ion-tab-button tab="members">
       <ion-icon name="people"></ion-icon>
       Members

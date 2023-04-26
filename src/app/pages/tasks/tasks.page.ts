@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Auth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { AlertController, PopoverController } from '@ionic/angular';
+import { AlertController, PopoverController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
-import { MemberService } from 'src/app/services/member.service';
 import { TaskService } from 'src/app/services/task.service';
 
 @Component({
@@ -24,10 +22,9 @@ export class TasksPage implements OnInit {
   constructor(
     private router : Router,
     private taskService: TaskService,
-    private memberService: MemberService,
-    private auth : Auth,
     private authService : AuthService,
     private alertController: AlertController,
+    private toastController: ToastController,
     private popoverController: PopoverController)
   { }
 
@@ -42,11 +39,13 @@ export class TasksPage implements OnInit {
 
   async ngOnInit() {
     this.userRole = await this.taskService.getCurrentUserRole()
-    if(this.userRole === 'admin'){
-      this.taskListSegment = 'Assigned_tasks'
-    }
     this.tasks = await this.taskService.getUserTasks();
     this.assignedTasks = await this.taskService.getUserAssignedTasks();
+
+    if(this.userRole === 'admin'){
+      this.taskListSegment = 'Assigned_tasks'
+      this.assignedTasks = await this.taskService.getAllTasks();
+    }
     this.loaded = false;
   }
   async changeStatus(taskId: any, taskStatus: any) {
@@ -95,6 +94,18 @@ export class TasksPage implements OnInit {
     });
   
     await alert.present();
+  }
+
+  async delete(id: string){
+    const deleted = await this.taskService.deleteTask(id);
+    if(deleted){
+      const toast = await this.toastController.create({
+        message: 'Task deleted successfully',
+        duration: 1500,
+      });
+      await toast.present();
+    }
+    this.ngOnInit();
   }
 
   backToHome(){

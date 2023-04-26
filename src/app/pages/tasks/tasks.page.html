@@ -131,7 +131,7 @@
             <ion-popover trigger="trigger-{{i}}" triggerAction="click">
               <ng-template>
                 <ion-content>
-                  <ion-item color="danger">
+                  <ion-item color="danger" (click)="delete(task.id)">
                     <ion-icon name="trash" slot="start"></ion-icon>
                     Delete
                   </ion-item>
@@ -144,7 +144,10 @@
             <ion-card-subtitle>{{ task.status }}</ion-card-subtitle>
           </ion-row>
         </ion-card-header>
-        <ion-card-content> {{ task.description }} </ion-card-content>
+        <ion-card-content> 
+          {{ task.description }} 
+          <p class="ion-padding-top">Assigned by {{ task.from }} to {{ task.to }}</p>
+        </ion-card-content>
       </ion-card>
     </ion-item>
   </ion-list>

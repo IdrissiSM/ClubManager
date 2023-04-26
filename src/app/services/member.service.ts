@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { collection, doc, Firestore, getDoc, getDocs, query, where } from '@angular/fire/firestore';
 import { TaskService } from './task.service';
+import { ClubService } from './club.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,13 +11,14 @@ export class MemberService {
   constructor(
     private firestore: Firestore,
     private taskService: TaskService,
+    private clubService: ClubService
     ) { }
 
   async getMembers() {
     const querySnapshot = await getDocs(collection(this.firestore, 'members'));
     const members = querySnapshot.docs
       .map(doc => doc.data())
-      .filter(member => member["idClub"] === this.getCurrentClubId())
+      .filter(member => member["idClub"] === this.clubService.getCurrentClubId())
       .map(async member => {
         const usersRef = collection(this.firestore, 'users');
         const querySnapshot = await getDocs(query(usersRef, where('uid', '==', member['idUser'])));
@@ -31,12 +33,11 @@ export class MemberService {
       });
     return Promise.all(members);
   }
-
   async getMembersWithoutUser() {
     const querySnapshot = await getDocs(collection(this.firestore, 'members'));
     const members = querySnapshot.docs
       .map(doc => doc.data())
-      .filter(member => member["idClub"] === this.getCurrentClubId() && member["idUser"] !== this.taskService.getCurrentUserUID())
+      .filter(member => member["idClub"] === this.clubService.getCurrentClubId() && member["idUser"] !== this.taskService.getCurrentUserUID())
       .map(async member => {
         const usersRef = collection(this.firestore, 'users');
         const querySnapshot = await getDocs(query(usersRef, where('uid', '==', member['idUser'])));
@@ -51,10 +52,9 @@ export class MemberService {
       });
     return Promise.all(members);
   }
-  
   async getMembersByClubAndCell() {
     const currentUser = this.taskService.getCurrentUserUID();
-    const clubId = this.getCurrentClubId();
+    const clubId = this.clubService.getCurrentClubId();
   
     const querySnapshot = await getDocs(query(collection(this.firestore, 'members'), where('idUser', '==', currentUser), where('idClub', '==', clubId)));
     const memberData = querySnapshot.docs[0]?.data() || {};
@@ -80,16 +80,5 @@ export class MemberService {
   
     return membersWithNames;
   }
-  
-
-  getCurrentClubId() {
-    const currentClubString = localStorage.getItem("currentClub");
-    if (currentClubString) {
-      const currentClub = JSON.parse(currentClubString);
-      return currentClub.id;
-    }
-    return null;
-  }
-
 }
 

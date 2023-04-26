@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>meetings</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-fab slot="fixed" horizontal="end">
+    <ion-fab-button color="primary" routerLink="/create-meeting">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-row>
+    <ion-col size="2">
+      <ion-button fill="clear" (click)="back()">
+        <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-col>
+    <ion-col size="8" class="ion-text-center">
+      <h2>{{ currentMonth }}</h2>
+    </ion-col>
+    <ion-col size="2">
+      <ion-button fill="clear" (click)="next()">
+        <ion-icon name="arrow-forward" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-col>
+  </ion-row>
+
+  <calendar
+    id="myCal"
+    [eventSource]="allEvents"
+    [calendarMode]="calendar.mode"
+    startHours="0"
+    noEventsLabel="There is no meeting to display"
+    endHours="23"
+    [step]="calendar.step"
+    [currentDate]="calendar.currentDate"
+    (onTitleChanged)="onViewTitleChanged($event)"
+    (onEventSelected)="onEventSelected($event)"
+    [timeInterval]="30"
+  ></calendar>
+
+</ion-content>
+ 

@@ -17,12 +17,16 @@ const routes: Routes = [
         loadChildren: () => import('../members/members.module').then( m => m.MembersPageModule)
       },
       {
+        path: 'meetings',
+        loadChildren: () => import('../meetings/meetings.module').then( m => m.MeetingsPageModule)
+      },
+      {
         path: 'notifications',
         loadChildren: () => import('../notifications/notifications.module').then( m => m.NotificationsPageModule)
       },
       {
         path: '',
-        redirectTo: '/tabs/members',
+        redirectTo: '/tabs/tasks',
         pathMatch: 'full'
       },
       {

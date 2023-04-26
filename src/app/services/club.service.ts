@@ -545,5 +545,13 @@ export class ClubService {
     console.log('doc.data()["role"]',doc.data()["role"])
     return doc.data()["role"]
   }
+  getCurrentClubId() {
+    const currentClubString = localStorage.getItem("currentClub");
+    if (currentClubString) {
+      const currentClub = JSON.parse(currentClubString);
+      return currentClub.id;
+    }
+    return null;
+  }
 
 }
