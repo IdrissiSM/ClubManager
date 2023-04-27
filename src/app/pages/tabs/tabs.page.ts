@@ -15,8 +15,12 @@ export class TabsPage implements OnInit {
   constructor(private taskService: TaskService, private userService: UserService) { }
 
   async ngOnInit() {
-    const notifications = await this.taskService.getUserTaskNotifications();
-    this.unread = notifications.filter(notification => !(notification as any)['read']).length;
+    const Tnotifications = await this.taskService.getUserTaskNotifications();
+    const Mnotifications = await this.taskService.getUserTaskNotifications();
+    this.unread = Tnotifications.filter(Tnotification => !(Tnotification as any)['read']).length;
+    if(this.unread == 0){
+      this.unread = Mnotifications.filter(Mnotification => !(Mnotification as any)['read']).length;
+    }
     if(await this.userService.getUserCell() == "Steering"){
       this.showMeeting = true
     }
