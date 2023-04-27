@@ -16,7 +16,7 @@ export class TabsPage implements OnInit {
 
   async ngOnInit() {
     const Tnotifications = await this.taskService.getUserTaskNotifications();
-    const Mnotifications = await this.taskService.getUserTaskNotifications();
+    const Mnotifications = await this.taskService.getUserMeetingNotifications();
     this.unread = Tnotifications.filter(Tnotification => !(Tnotification as any)['read']).length;
     if(this.unread == 0){
       this.unread = Mnotifications.filter(Mnotification => !(Mnotification as any)['read']).length;
