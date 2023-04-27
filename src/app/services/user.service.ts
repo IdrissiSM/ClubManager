@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Firestore, collection, where, query, getDocs, updateDoc, doc, getDoc } from '@angular/fire/firestore';
 import { Storage, getDownloadURL, ref, uploadBytes, deleteObject  } from '@angular/fire/storage';
 import { ToastController } from '@ionic/angular';
+import { ClubService } from './club.service';
+import { TaskService } from './task.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,8 @@ export class UserService {
 
   constructor(
     private firestore: Firestore,
-    private storage : Storage
+    private storage : Storage,
+    private clubService: ClubService,
   ){}
 
   async saveUserInfo(uid : string, image : any, userInfo : any){
@@ -117,4 +120,31 @@ export class UserService {
     const doc = docRef.docs[0];
     return doc
   }
+  async getUserCell() {
+    const querySnapshot = await getDocs(
+      query(collection(this.firestore, 'members'),
+        where("idUser", "==", this.getCurrentUserUID()),
+        where("idClub", "==", this.clubService.getCurrentClubId()),
+      )
+    )
+  
+    const idCell = querySnapshot.docs[0].data()['idCell']
+    const docRef = doc(this.firestore, 'cells', idCell)
+  
+    const docSnapshot = await getDoc(docRef)
+  
+    const cell = docSnapshot.data()
+    if(cell){
+      return cell['name']
+    }
+    else{
+      return ''
+    }
+  }
+  getCurrentUserUID() {
+    const userInfoString = localStorage.getItem('currentUser');
+    const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
+    return userInfo.uid;
+  }
+  
 }

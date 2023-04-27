@@ -542,7 +542,6 @@ export class ClubService {
     )
     const docRef = await getDocs(q);
     const doc = docRef.docs[0];
-    console.log('doc.data()["role"]',doc.data()["role"])
     return doc.data()["role"]
   }
   getCurrentClubId() {

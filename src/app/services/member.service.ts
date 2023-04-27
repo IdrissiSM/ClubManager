@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { collection, doc, Firestore, getDoc, getDocs, query, where } from '@angular/fire/firestore';
 import { TaskService } from './task.service';
 import { ClubService } from './club.service';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +11,8 @@ export class MemberService {
 
   constructor(
     private firestore: Firestore,
-    private taskService: TaskService,
-    private clubService: ClubService
+    private userService: UserService,
+    private clubService: ClubService,
     ) { }
 
   async getMembers() {
@@ -37,7 +38,7 @@ export class MemberService {
     const querySnapshot = await getDocs(collection(this.firestore, 'members'));
     const members = querySnapshot.docs
       .map(doc => doc.data())
-      .filter(member => member["idClub"] === this.clubService.getCurrentClubId() && member["idUser"] !== this.taskService.getCurrentUserUID())
+      .filter(member => member["idClub"] === this.clubService.getCurrentClubId() && member["idUser"] !== this.userService.getCurrentUserUID())
       .map(async member => {
         const usersRef = collection(this.firestore, 'users');
         const querySnapshot = await getDocs(query(usersRef, where('uid', '==', member['idUser'])));
@@ -53,7 +54,7 @@ export class MemberService {
     return Promise.all(members);
   }
   async getMembersByClubAndCell() {
-    const currentUser = this.taskService.getCurrentUserUID();
+    const currentUser = this.userService.getCurrentUserUID();
     const clubId = this.clubService.getCurrentClubId();
   
     const querySnapshot = await getDocs(query(collection(this.firestore, 'members'), where('idUser', '==', currentUser), where('idClub', '==', clubId)));

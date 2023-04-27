@@ -13,7 +13,11 @@ export class NotificationsPage implements OnInit {
   constructor(private taskService : TaskService) { }
 
   async ngOnInit() {
-    this.notifications = await this.taskService.getUserTaskNotifications()
+    const tasksN = await this.taskService.getUserTaskNotifications()
+    const meetingN = await this.taskService.getUserMeetingNotifications()
+    this.notifications = tasksN.concat(meetingN);
+    // this.notifications.sort((a, b) => a.date - b.date);
+    console.log(this.notifications)
     this.notifications.forEach((n) => {
       if(!n.read){
         this.taskService.readNotification(n.id)

@@ -23,12 +23,13 @@ import {
 } from '@angular/fire/storage';
 import { Task } from '../Models/Task';
 import { ClubService } from './club.service';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  constructor(private firestore: Firestore, private clubService: ClubService) {}
+  constructor(private firestore: Firestore, private clubService: ClubService, private userService: UserService) {}
 
   async createTask(newTask: Task) {
     try {
@@ -61,12 +62,101 @@ export class TaskService {
         to: to,
         deadline: deadline,
         read: false,
-        clubId: this.clubService.getCurrentClubId()
+        clubId: this.clubService.getCurrentClubId(),
       });
       return true;
     } catch (error) {
       return false;
     }
+  }
+  async getUserTaskNotifications() {
+    const notificationsRef = collection(this.firestore, 'notifications');
+    const querySnapshot = await getDocs(
+      query(
+        notificationsRef,
+        where('to', '==', this.userService.getCurrentUserUID()),
+        where('clubId', '==', this.clubService.getCurrentClubId())
+      )
+    );
+    const notifications = await Promise.all(
+      querySnapshot.docs.map(async (doc) => {
+        const notificationsData = doc.data();
+        const notification = { ...notificationsData, id: doc.id };
+        const usersRef = collection(this.firestore, 'users');
+        const userQuerySnapshot = await getDocs(
+          query(usersRef, where('uid', '==', notificationsData['from']))
+        );
+        if (!userQuerySnapshot.empty) {
+          const userData = userQuerySnapshot.docs[0].data();
+          const userName = userData['fullname'] || '';
+          const userPhoto =
+            userData['photoUrl'] ||
+            'https://ionicframework.com/docs/img/demos/avatar.svg';
+          return { ...notification, fullname: userName, photoUrl: userPhoto };
+        }
+        return notification;
+      })
+    );
+    return notifications;
+  }
+  async readNotification(notificationId: string) {
+    const notificationRef = doc(
+      this.firestore,
+      'notifications',
+      notificationId
+    );
+    await updateDoc(notificationRef, { read: true });
+  }
+  async createMeetingNotification(startDate: any, endDate: any, location: any) {
+    try {
+      const NotificationsCollectionInstance = collection(
+        this.firestore,
+        'notifications'
+      );
+      await addDoc(NotificationsCollectionInstance, {
+        date: new Date().toISOString(),
+        type: 'meeting',
+        startDate: startDate,
+        endDate: endDate,
+        location: location,
+        read: false,
+        from: this.userService.getCurrentUserUID(),
+        clubId: this.clubService.getCurrentClubId(),
+      });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+  async getUserMeetingNotifications() {
+    const notificationsRef = collection(this.firestore, 'notifications');
+    const querySnapshot = await getDocs(
+      query(
+        notificationsRef,
+        where('type', '==', 'meeting'),
+        where('clubId', '==', this.clubService.getCurrentClubId())
+      )
+    );
+    const notifications = await Promise.all(
+      querySnapshot.docs.map(async (doc) => {
+        const notificationsData = doc.data();
+        const notification = { ...notificationsData, id: doc.id };
+        const usersRef = collection(this.firestore, 'users');
+        const userQuerySnapshot = await getDocs(
+          query(usersRef, where('uid', '==', notificationsData['from']))
+        );
+        if (!userQuerySnapshot.empty) {
+          const userData = userQuerySnapshot.docs[0].data();
+          const userName = notificationsData['from'] == this.userService.getCurrentUserUID()? 'you': userData['fullname']
+          const userPhoto =
+            userData['photoUrl'] ||
+            'https://ionicframework.com/docs/img/demos/avatar.svg';
+          return { ...notification, fullname: userName, photoUrl: userPhoto };
+        }
+        return notification;
+      })
+    );
+    return notifications;
   }
   async getAllTasks() {
     const tasksRef = collection(this.firestore, 'tasks');
@@ -85,9 +175,9 @@ export class TaskService {
       );
       if (!fromQuerySnapshot.empty && !toQuerySnapshot.empty) {
         const fromData = fromQuerySnapshot.docs[0].data();
-        const fromName = fromData['fullname'] || ''; 
+        const fromName = taskData['from'] == this.userService.getCurrentUserUID()? 'you': fromData['fullname']
         const toData = toQuerySnapshot.docs[0].data();
-        const toName = toData['fullname'] || ''; 
+        const toName = taskData['to'] == this.userService.getCurrentUserUID()? 'you': toData['fullname']
         return {...taskData, from: fromName, to: toName, id: taskId}
       }
       return { id: taskId, ...taskData };
@@ -98,7 +188,7 @@ export class TaskService {
     const tasksRef = collection(this.firestore, 'tasks');
     const querySnapshot = await getDocs(
       query(tasksRef, 
-        where('to', '==', this.getCurrentUserUID()), 
+        where('to', '==', this.userService.getCurrentUserUID()), 
         where('clubId', '==', this.clubService.getCurrentClubId())
       )
     );
@@ -109,52 +199,20 @@ export class TaskService {
     });
     return tasks;
   }
-  async getUserTaskNotifications() {
-    const notificationsRef = collection(this.firestore, 'notifications');
-    const querySnapshot = await getDocs(
-      query(notificationsRef, 
-        where('to', '==', this.getCurrentUserUID()),
-        where('clubId', '==', this.clubService.getCurrentClubId()))
-    );
-    const notifications = await Promise.all(querySnapshot.docs.map(async (doc) => {
-      const notificationsData = doc.data();
-      const notification = { ...notificationsData, id: doc.id}
-      const usersRef = collection(this.firestore, 'users');
-      const userQuerySnapshot = await getDocs(
-        query(usersRef, where('uid', '==', notificationsData['from']))
-      );
-      if (!userQuerySnapshot.empty) {
-        const userData = userQuerySnapshot.docs[0].data();
-        const userName = userData['fullname'] || '';
-        const userPhoto = userData['photoUrl'] || "https://ionicframework.com/docs/img/demos/avatar.svg";
-        return { ...notification, fullname: userName, photoUrl: userPhoto };
-      }
-      return notification;
-    }));
-    return notifications;
-  }
-  async readNotification(notificationId: string) {
-    const notificationRef = doc(this.firestore, 'notifications', notificationId);
-    await updateDoc(notificationRef, { read: true });
-  }
   async getUserAssignedTasks() {
     const tasksRef = collection(this.firestore, 'tasks');
     const querySnapshot = await getDocs(
       query(tasksRef, 
-        where('from', '==', this.getCurrentUserUID()),
+        where('from', '==', this.userService.getCurrentUserUID()),
         where('clubId', '==', this.clubService.getCurrentClubId())
       )
     );
     const tasks = querySnapshot.docs.map((doc) => doc.data());
     return tasks;
   }
-  getCurrentUserUID() {
-    const userInfoString = localStorage.getItem('currentUser');
-    const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
-    return userInfo.uid;
-  }
+  
   async getCurrentUserRole() {
-    const uid = this.getCurrentUserUID();
+    const uid = this.userService.getCurrentUserUID();
     const membersRef = collection(this.firestore, 'members');
     const querySnapshot = await getDocs(
       query(membersRef, where('idUser', '==', uid))

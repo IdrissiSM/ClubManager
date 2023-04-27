@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from 'src/app/services/task.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-tabs',
@@ -8,15 +9,17 @@ import { TaskService } from 'src/app/services/task.service';
 })
 export class TabsPage implements OnInit {
   unread = 0
-  userRole = ""
+  showMeeting = false
   // schedule a meeting
 
-  constructor(private taskService: TaskService) { }
+  constructor(private taskService: TaskService, private userService: UserService) { }
 
   async ngOnInit() {
     const notifications = await this.taskService.getUserTaskNotifications();
     this.unread = notifications.filter(notification => !(notification as any)['read']).length;
-    this.userRole = await this.taskService.getCurrentUserRole()
+    if(await this.userService.getUserCell() == "Steering"){
+      this.showMeeting = true
+    }
   }
 
 

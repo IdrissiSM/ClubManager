@@ -1,5 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { CalendarComponent, CalendarMode, Step } from 'ionic2-calendar';
+import { MeetingService } from 'src/app/services/meeting.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-meetings',
@@ -7,7 +10,10 @@ import { CalendarComponent, CalendarMode, Step } from 'ionic2-calendar';
   styleUrls: ['./meetings.page.scss'],
 })
 export class MeetingsPage implements OnInit {
-  allEvents!: any[];
+
+  constructor(private meetingService: MeetingService,private modalController: ModalController){}
+
+    allEvents: any[] = [];
   currentMonth!: string;
   calendar = {
     mode: 'month' as CalendarMode,
@@ -37,13 +43,26 @@ export class MeetingsPage implements OnInit {
     },
   ];
 
-  ngOnInit(): void {
-    this.allEvents = this.myData;
+  async ngOnInit(): Promise<void> {
+    // this.allEvents = this.myData;
+    console.log(new Date(2023, 3, 23, 14, 0, 0))
+    this.meetingService.getMeetings().then(docs => {
+      docs.forEach(doc => {
+        this.allEvents.push({
+          title: doc.data()['title'],
+          description: doc.data()['description'],
+          startTime: new Date(doc.data()['startDate']),
+          endTime: new Date(doc.data()['endDate']),
+          location: doc.data()['location']
+        })
+      })
+      console.log(this.allEvents)
+    })
   }
   onViewTitleChanged(title: string) {
     this.currentMonth = title;
   }
-  onEventSelected(ev: any) {
+  async onEventSelected(ev: any) {
     this.newMeet = ev;
   }
   back() {

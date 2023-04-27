@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, addDoc, collection } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, getDocs, query, where } from '@angular/fire/firestore';
 import { Meeting } from '../Models/meeting';
 import { ClubService } from './club.service';
 
@@ -46,7 +46,11 @@ export class MeetingService {
       return false;
     }
   }
-  getMeetings(){
-    
+  async getMeetings(){
+    const meetingsRef = collection(this.firestore, 'meetings');
+    const querySnapshot = await getDocs(
+      query(meetingsRef, where('clubId', '==', this.clubService.getCurrentClubId()))
+    );
+    return querySnapshot.docs;
   }
 }
