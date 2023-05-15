@@ -22,6 +22,7 @@ export class TabsPage implements OnInit {
       this.unread = Mnotifications.filter(Mnotification => !(Mnotification as any)['read']).length;
     }
     if(await this.userService.getUserCell() == "Steering"){
+      console.log(await this.userService.getUserCell())
       this.showMeeting = true
     }
   }

@@ -14,6 +14,7 @@ export class MeetingService {
     try {
       const MeetingsCollectionInstance = collection(this.firestore, 'meetings');
       await addDoc(MeetingsCollectionInstance, {
+        type: 'meeting',
         title: newMeeting.title,
         description: newMeeting.description,
         startDate: newMeeting.startDate,
