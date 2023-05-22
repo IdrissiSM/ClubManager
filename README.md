@@ -19,7 +19,7 @@
     est organisée.
     <br />
     <br />
-    <a href="https://drive.google.com/drive/folders/1iQRKdZBFc8rpf4Dl5opbdX2CiabqeyDD"><strong>Consulter le rapport et la video demo »</strong></a>
+    <a target="_blank" href="https://drive.google.com/drive/folders/1iQRKdZBFc8rpf4Dl5opbdX2CiabqeyDD"><strong>Consulter le rapport et la video demo »</strong></a>
     <br />
   </p>
 </div>
